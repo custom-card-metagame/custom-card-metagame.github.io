@@ -101,7 +101,10 @@ async function main() {
     if (!key) {
       return res.status(400).json({ error: 'Key parameter is missing' });
     }
-
+app.get('/', (_, res) => {
+  console.log("Root route accessed."); // Add this log
+  res.render('index', { importDataJSON: null });
+});
     db.get(
       'SELECT value FROM KeyValuePairs WHERE key = ?',
       [key],
