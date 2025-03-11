@@ -301,10 +301,10 @@ async function main() {
     }
   });
 
-  const port = 4000;
-  server.listen(port, () => {
-    // eslint-disable-next-line no-console
-    console.log(`Server is running at http://localhost:${port}`);
-  });
+  // Port Configuration
+const port = process.env.PORT || 4000;
+server.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
 }
 main();
