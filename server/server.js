@@ -6,8 +6,7 @@ import { instrument } from '@socket.io/admin-ui';
 import bcrypt from 'bcryptjs';
 import path from 'path';
 import dotenv from 'dotenv';
-import sqlite3 from 'sqlite3';
-import fs from 'fs';
+import { Pool } from 'pg';
 import { fileURLToPath } from 'url';
 
 // Handle __dirname in ES modules and adjust for client folder
@@ -17,6 +16,14 @@ const clientDir = path.join(__dirname, '../client');
 
 const envFilePath = path.join(__dirname, 'socket-admin-password.env');
 dotenv.config({ path: envFilePath });
+
+// PostgreSQL Connection Pool
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
 
 function generateRandomKey(length) {
   const characters =
@@ -31,10 +38,7 @@ function generateRandomKey(length) {
 
 async function main() {
   const app = express();
-  // HTTP Server Setup
   const server = http.createServer(app);
-
-  // Socket.IO Server Setup
   const io = new Server(server, {
     connectionStateRecovery: {},
     cors: {
@@ -42,44 +46,19 @@ async function main() {
       credentials: true,
     },
   });
-  // Create a new SQLite database
-  const dbFilePath = 'database/db.sqlite';
-  const maxSizeGB = 15;
-  const db = new sqlite3.Database(dbFilePath);
-  let isDatabaseCapacityReached = false;
 
-  // Check database size
-  const checkDatabaseSizeGB = () => {
-    const stats = fs.statSync(dbFilePath);
-    const fileSizeInBytes = stats.size;
-    const fileSizeInGB = fileSizeInBytes / (1024 * 1024 * 1024); // Convert bytes to gigabytes
-    return fileSizeInGB;
-  };
-
-  // Perform size check periodically
-  setInterval(
-    () => {
-      const currentSize = checkDatabaseSizeGB();
-      if (currentSize > maxSizeGB) {
-        isDatabaseCapacityReached = true;
-      }
-    },
-    1000 * 60 * 60
-  );
-
-  // Create a table to store key-value pairs
-  db.serialize(() => {
-    db.run(
+  try {
+    await pool.query(
       'CREATE TABLE IF NOT EXISTS KeyValuePairs (key TEXT PRIMARY KEY, value TEXT)'
     );
-  });
+  } catch (err) {
+    console.error('Error creating table:', err);
+  }
 
-  // Bcrypt Configuration
   const saltRounds = 10;
   const plainPassword = process.env.ADMIN_PASSWORD || 'defaultPassword';
   const hashedPassword = bcrypt.hashSync(plainPassword, saltRounds);
 
-  // Socket.IO Admin Instrumentation
   instrument(io, {
     auth: {
       type: 'basic',
@@ -96,33 +75,31 @@ async function main() {
   app.get('/', (_, res) => {
     res.render('index', { importDataJSON: null });
   });
-  app.get('/import', (req, res) => {
+
+  app.get('/import', async (req, res) => {
     const key = req.query.key;
     if (!key) {
       return res.status(400).json({ error: 'Key parameter is missing' });
     }
-app.get('/', (_, res) => {
-  console.log("Root route accessed."); // Add this log
-  res.render('index', { importDataJSON: null });
-});
-    db.get(
-      'SELECT value FROM KeyValuePairs WHERE key = ?',
-      [key],
-      (err, row) => {
-        if (err) {
-          return res.status(500).json({ error: 'Internal server error' });
-        }
-        if (row) {
-          res.render('index', { importDataJSON: row.value });
-        } else {
-          res.status(404).json({ error: 'Key not found' });
-        }
+
+    try {
+      const result = await pool.query(
+        'SELECT value FROM KeyValuePairs WHERE key = $1',
+        [key]
+      );
+
+      if (result.rows.length > 0) {
+        res.render('index', { importDataJSON: result.rows[0].value });
+      } else {
+        res.status(404).json({ error: 'Key not found' });
       }
-    );
+    } catch (err) {
+      console.error('Error fetching data:', err);
+      return res.status(500).json({ error: 'Internal server error' });
+    }
   });
 
   const roomInfo = new Map();
-  // Function to periodically clean up empty rooms
   const cleanUpEmptyRooms = () => {
     roomInfo.forEach((room, roomId) => {
       if (room.players.size === 0 && room.spectators.size === 0) {
@@ -130,10 +107,25 @@ app.get('/', (_, res) => {
       }
     });
   };
-  // Set up a timer to clean up empty rooms every 5 minutes (adjust as needed)
   setInterval(cleanUpEmptyRooms, 5 * 60 * 1000);
-  //Socket.IO Connection Handling
+
   io.on('connection', async (socket) => {
+    socket.on('storeGameState', async (exportData) => {
+      try {
+        const key = generateRandomKey(4);
+        await pool.query(
+          'INSERT INTO KeyValuePairs (key, value) VALUES ($1, $2) ON CONFLICT (key) DO UPDATE SET value = $2',
+          [key, exportData]
+        );
+        socket.emit('exportGameStateSuccessful', key);
+      } catch (err) {
+        console.error('Error storing data:', err);
+        socket.emit(
+          'exportGameStateFailed',
+          'Error exporting game! Please try again or save as a file.'
+        );
+      }
+    });
     // Function to handle disconnections (unintended)
     const disconnectHandler = (roomId, username) => {
       if (!socket.data.leaveRoom) {
@@ -168,30 +160,7 @@ app.get('/', (_, res) => {
         }
       }
     };
-    socket.on('storeGameState', (exportData) => {
-      if (isDatabaseCapacityReached) {
-        socket.emit(
-          'exportGameStateFailed',
-          'No more storage for game states! You should probably tell Michael/Xiao Xiao.'
-        );
-      } else {
-        const key = generateRandomKey(4);
-        db.run(
-          'INSERT OR REPLACE INTO KeyValuePairs (key, value) VALUES (?, ?)',
-          [key, exportData],
-          (err) => {
-            if (err) {
-              socket.emit(
-                'exportGameStateFailed',
-                'Error exporting game! Please try again or save as a file.'
-              );
-            } else {
-              socket.emit('exportGameStateSuccessful', key);
-            }
-          }
-        );
-      }
-    });
+
     socket.on('joinGame', (roomId, username, isSpectator) => {
       if (!roomInfo.has(roomId)) {
         roomInfo.set(roomId, { players: new Set(), spectators: new Set() });
@@ -248,38 +217,6 @@ app.get('/', (_, res) => {
       'spectatorActionData',
       'initiateImport',
       'endImport',
-      // 'exchangeData',
-      // 'loadDeckData',
-      // 'reset',
-      // 'setup',
-      // 'takeTurn',
-      // 'draw',
-      // 'moveCardBundle',
-      // 'shuffleIntoDeck',
-      // 'moveToDeckTop',
-      // 'switchWithDeckTop',
-      // 'viewDeck',
-      // 'shuffleAll',
-      // 'discardAll',
-      // 'lostZoneAll',
-      // 'handAll',
-      // 'leaveAll',
-      // 'discardAndDraw',
-      // 'shuffleAndDraw',
-      // 'shuffleBottomAndDraw',
-      // 'shuffleZone',
-      // 'useAbility',
-      // 'removeAbilityCounter',
-      // 'addDamageCounter',
-      // 'updateDamageCounter',
-      // 'removeDamageCounter',
-      // 'addSpecialCondition',
-      // 'updateSpecialCondition',
-      // 'removeSpecialCondition',
-      // 'discardBoard',
-      // 'handBoard',
-      // 'shuffleBoard',
-      // 'lostZoneBoard',
       'lookAtCards',
       'stopLookingAtCards',
       'revealCards',
@@ -288,12 +225,6 @@ app.get('/', (_, res) => {
       'hideShortcut',
       'lookShortcut',
       'stopLookingShortcut',
-      // 'playRandomCardFaceDown',
-      // 'rotateCard',
-      // 'changeType',
-      // 'attack',
-      // 'pass',
-      // 'VSTARGXFunction',
     ];
 
     // Register event listeners using the common function
@@ -305,9 +236,10 @@ app.get('/', (_, res) => {
   });
 
   // Port Configuration
-const port = process.env.PORT || 4000;
-server.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
-});
+  const port = process.env.PORT || 4000;
+  server.listen(port, () => {
+    console.log(`Server is running at http://localhost:${port}`);
+  });
 }
+
 main();
