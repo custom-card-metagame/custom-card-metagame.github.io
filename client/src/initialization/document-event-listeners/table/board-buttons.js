@@ -11,7 +11,11 @@ import { refreshBoardImages } from '../../../setup/sizing/refresh-board.js';
 
 export const initializeBoardButtons = () => {
   const turnButton = document.getElementById('turnButton');
-  // Add null check for turn button
+  const flipCoinButton = document.getElementById('flipCoinButton');
+  const flipBoardButton = document.getElementById('flipBoardButton');
+  const refreshButton = document.getElementById('refreshButton');
+
+  // Turn Button
   if (turnButton) {
     turnButton.addEventListener('click', () =>
       takeTurn(systemState.initiator, systemState.initiator)
@@ -20,8 +24,7 @@ export const initializeBoardButtons = () => {
     console.warn('Turn Button not found');
   }
 
-  const flipCoinButton = document.getElementById('flipCoinButton');
-  // Add null check for flip coin button
+  // Flip Coin Button
   if (flipCoinButton) {
     flipCoinButton.addEventListener('click', () =>
       flipCoin(systemState.initiator)
@@ -30,96 +33,109 @@ export const initializeBoardButtons = () => {
     console.warn('Flip Coin Button not found');
   }
 
-  const flipBoardButton = document.getElementById('flipBoardButton');
-  // Add null check for flip board button
+  // Flip Board Button
   if (flipBoardButton) {
     flipBoardButton.addEventListener('click', flipBoard);
   } else {
     console.warn('Flip Board Button not found');
   }
 
-  const refreshButton = document.getElementById('refreshButton');
-  // Add null check for refresh button
+  // Refresh Button
   if (refreshButton) {
     refreshButton.addEventListener('click', refreshBoardImages);
   } else {
     console.warn('Refresh Button not found');
   }
 
-  const selfVSTARButton = selfContainerDocument.getElementById('VSTARButton');
-  // Add null check for self VSTAR button
-  if (selfVSTARButton) {
-    selfVSTARButton.addEventListener('click', () => {
-      // Prevent VSTAR action in spectator mode or replay
-      if (
-        !(
-          systemState.isTwoPlayer &&
-          document.getElementById('spectatorModeCheckbox').checked
-        ) &&
-        !systemState.isReplay
-      ) {
-        VSTARGXFunction('self', 'VSTAR');
-      }
-    });
-  } else {
-    console.warn('Self VSTAR Button not found');
-  }
+  // Wait for iframes to load before accessing their contents
+  const initializeIframeButtons = () => {
+    // Self VSTAR Button
+    const selfVSTARButton = selfContainerDocument.getElementById('VSTARButton');
+    if (selfVSTARButton) {
+      selfVSTARButton.addEventListener('click', () => {
+        if (
+          !(
+            systemState.isTwoPlayer &&
+            document.getElementById('spectatorModeCheckbox').checked
+          ) &&
+          !systemState.isReplay
+        ) {
+          VSTARGXFunction('self', 'VSTAR');
+        }
+      });
+    } else {
+      console.warn('Self VSTAR Button not found');
+    }
 
-  const selfGXButton = selfContainerDocument.getElementById('GXButton');
-  // Add null check for self GX button
-  if (selfGXButton) {
-    selfGXButton.addEventListener('click', () => {
-      // Prevent GX action in spectator mode or replay
-      if (
-        !(
-          systemState.isTwoPlayer &&
-          document.getElementById('spectatorModeCheckbox').checked
-        ) &&
-        !systemState.isReplay
-      ) {
-        VSTARGXFunction('self', 'GX');
-      }
-    });
-  } else {
-    console.warn('Self GX Button not found');
-  }
+    // Self GX Button
+    const selfGXButton = selfContainerDocument.getElementById('GXButton');
+    if (selfGXButton) {
+      selfGXButton.addEventListener('click', () => {
+        if (
+          !(
+            systemState.isTwoPlayer &&
+            document.getElementById('spectatorModeCheckbox').checked
+          ) &&
+          !systemState.isReplay
+        ) {
+          VSTARGXFunction('self', 'GX');
+        }
+      });
+    } else {
+      console.warn('Self GX Button not found');
+    }
 
-  const oppVSTARButton = oppContainerDocument.getElementById('VSTARButton');
-  // Add null check for opponent VSTAR button
-  if (oppVSTARButton) {
-    oppVSTARButton.addEventListener('click', () => {
-      // Prevent VSTAR action in spectator mode or replay
-      if (
-        !(
-          systemState.isTwoPlayer &&
-          document.getElementById('spectatorModeCheckbox').checked
-        ) &&
-        !systemState.isReplay
-      ) {
-        VSTARGXFunction('opp', 'VSTAR');
-      }
-    });
-  } else {
-    console.warn('Opponent VSTAR Button not found');
-  }
+    // Opponent VSTAR Button
+    const oppVSTARButton = oppContainerDocument.getElementById('VSTARButton');
+    if (oppVSTARButton) {
+      oppVSTARButton.addEventListener('click', () => {
+        if (
+          !(
+            systemState.isTwoPlayer &&
+            document.getElementById('spectatorModeCheckbox').checked
+          ) &&
+          !systemState.isReplay
+        ) {
+          VSTARGXFunction('opp', 'VSTAR');
+        }
+      });
+    } else {
+      console.warn('Opponent VSTAR Button not found');
+    }
 
-  const oppGXButton = oppContainerDocument.getElementById('GXButton');
-  // Add null check for opponent GX button
-  if (oppGXButton) {
-    oppGXButton.addEventListener('click', () => {
-      // Prevent GX action in spectator mode or replay
-      if (
-        !(
-          systemState.isTwoPlayer &&
-          document.getElementById('spectatorModeCheckbox').checked
-        ) &&
-        !systemState.isReplay
-      ) {
-        VSTARGXFunction('opp', 'GX');
-      }
-    });
+    // Opponent GX Button
+    const oppGXButton = oppContainerDocument.getElementById('GXButton');
+    if (oppGXButton) {
+      oppGXButton.addEventListener('click', () => {
+        if (
+          !(
+            systemState.isTwoPlayer &&
+            document.getElementById('spectatorModeCheckbox').checked
+          ) &&
+          !systemState.isReplay
+        ) {
+          VSTARGXFunction('opp', 'GX');
+        }
+      });
+    } else {
+      console.warn('Opponent GX Button not found');
+    }
+  };
+
+  // Ensure iframes are loaded before trying to access their contents
+  if (selfContainerDocument.readyState === 'complete' && 
+      oppContainerDocument.readyState === 'complete') {
+    initializeIframeButtons();
   } else {
-    console.warn('Opponent GX Button not found');
+    // Add load event listeners to iframes
+    const selfContainer = document.getElementById('selfContainer');
+    const oppContainer = document.getElementById('oppContainer');
+
+    if (selfContainer) {
+      selfContainer.addEventListener('load', initializeIframeButtons);
+    }
+    if (oppContainer) {
+      oppContainer.addEventListener('load', initializeIframeButtons);
+    }
   }
 };
-
