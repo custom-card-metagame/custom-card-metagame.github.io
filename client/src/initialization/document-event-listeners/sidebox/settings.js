@@ -1,16 +1,10 @@
-import {
-  changeBackground,
-  darkMode,
-  showOutlines,
-} from '../../../setup/settings/settings.js';
-import { systemState } from '../../../front-end.js';
-import {
-  lookAtCards,
-  stopLookingAtCards,
-} from '../../../actions/general/reveal-and-hide.js';
-
 export const initializeSettings = () => {
   const darkModeCheckbox = document.getElementById('darkModeCheckbox');
+
+  // Set the checkbox to be checked and enable dark mode by default
+  darkModeCheckbox.checked = true; // Check the checkbox by default
+  darkMode(); // Call the darkMode function to apply dark mode styles immediately
+
   darkModeCheckbox.addEventListener('change', darkMode);
 
   const showZonesCheckbox = document.getElementById('showZonesCheckbox');
@@ -33,9 +27,7 @@ export const initializeSettings = () => {
     }
   });
 
-  const changeBackgroundButton = document.getElementById(
-    'changeBackgroundButton'
-  );
+  const changeBackgroundButton = document.getElementById('changeBackgroundButton');
   changeBackgroundButton.addEventListener('click', () => {
     changeBackground();
   });
