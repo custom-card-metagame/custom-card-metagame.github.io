@@ -1,6 +1,6 @@
 {
-  "name": "ptcg-sim",
-  "version": "1.5.1",
+  "name": "ptcg-sim-meta",
+  "version": "1.5.1.1",
   "private": true,
   "workspaces": [
     "client",
