@@ -11,70 +11,115 @@ import { refreshBoardImages } from '../../../setup/sizing/refresh-board.js';
 
 export const initializeBoardButtons = () => {
   const turnButton = document.getElementById('turnButton');
-  turnButton.addEventListener('click', () =>
-    takeTurn(systemState.initiator, systemState.initiator)
-  );
+  // Add null check for turn button
+  if (turnButton) {
+    turnButton.addEventListener('click', () =>
+      takeTurn(systemState.initiator, systemState.initiator)
+    );
+  } else {
+    console.warn('Turn Button not found');
+  }
 
   const flipCoinButton = document.getElementById('flipCoinButton');
-  flipCoinButton.addEventListener('click', () =>
-    flipCoin(systemState.initiator)
-  );
+  // Add null check for flip coin button
+  if (flipCoinButton) {
+    flipCoinButton.addEventListener('click', () =>
+      flipCoin(systemState.initiator)
+    );
+  } else {
+    console.warn('Flip Coin Button not found');
+  }
 
   const flipBoardButton = document.getElementById('flipBoardButton');
-  flipBoardButton.addEventListener('click', flipBoard);
+  // Add null check for flip board button
+  if (flipBoardButton) {
+    flipBoardButton.addEventListener('click', flipBoard);
+  } else {
+    console.warn('Flip Board Button not found');
+  }
 
   const refreshButton = document.getElementById('refreshButton');
-  refreshButton.addEventListener('click', refreshBoardImages);
+  // Add null check for refresh button
+  if (refreshButton) {
+    refreshButton.addEventListener('click', refreshBoardImages);
+  } else {
+    console.warn('Refresh Button not found');
+  }
 
   const selfVSTARButton = selfContainerDocument.getElementById('VSTARButton');
-  selfVSTARButton.addEventListener('click', () => {
-    if (
-      !(
-        systemState.isTwoPlayer &&
-        document.getElementById('spectatorModeCheckbox').checked
-      ) &&
-      !systemState.isReplay
-    ) {
-      VSTARGXFunction('self', 'VSTAR');
-    }
-  });
+  // Add null check for self VSTAR button
+  if (selfVSTARButton) {
+    selfVSTARButton.addEventListener('click', () => {
+      // Prevent VSTAR action in spectator mode or replay
+      if (
+        !(
+          systemState.isTwoPlayer &&
+          document.getElementById('spectatorModeCheckbox').checked
+        ) &&
+        !systemState.isReplay
+      ) {
+        VSTARGXFunction('self', 'VSTAR');
+      }
+    });
+  } else {
+    console.warn('Self VSTAR Button not found');
+  }
 
   const selfGXButton = selfContainerDocument.getElementById('GXButton');
-  selfGXButton.addEventListener('click', () => {
-    if (
-      !(
-        systemState.isTwoPlayer &&
-        document.getElementById('spectatorModeCheckbox').checked
-      ) &&
-      !systemState.isReplay
-    ) {
-      VSTARGXFunction('self', 'GX');
-    }
-  });
+  // Add null check for self GX button
+  if (selfGXButton) {
+    selfGXButton.addEventListener('click', () => {
+      // Prevent GX action in spectator mode or replay
+      if (
+        !(
+          systemState.isTwoPlayer &&
+          document.getElementById('spectatorModeCheckbox').checked
+        ) &&
+        !systemState.isReplay
+      ) {
+        VSTARGXFunction('self', 'GX');
+      }
+    });
+  } else {
+    console.warn('Self GX Button not found');
+  }
 
   const oppVSTARButton = oppContainerDocument.getElementById('VSTARButton');
-  oppVSTARButton.addEventListener('click', () => {
-    if (
-      !(
-        systemState.isTwoPlayer &&
-        document.getElementById('spectatorModeCheckbox').checked
-      ) &&
-      !systemState.isReplay
-    ) {
-      VSTARGXFunction('opp', 'VSTAR');
-    }
-  });
+  // Add null check for opponent VSTAR button
+  if (oppVSTARButton) {
+    oppVSTARButton.addEventListener('click', () => {
+      // Prevent VSTAR action in spectator mode or replay
+      if (
+        !(
+          systemState.isTwoPlayer &&
+          document.getElementById('spectatorModeCheckbox').checked
+        ) &&
+        !systemState.isReplay
+      ) {
+        VSTARGXFunction('opp', 'VSTAR');
+      }
+    });
+  } else {
+    console.warn('Opponent VSTAR Button not found');
+  }
 
   const oppGXButton = oppContainerDocument.getElementById('GXButton');
-  oppGXButton.addEventListener('click', () => {
-    if (
-      !(
-        systemState.isTwoPlayer &&
-        document.getElementById('spectatorModeCheckbox').checked
-      ) &&
-      !systemState.isReplay
-    ) {
-      VSTARGXFunction('opp', 'GX');
-    }
-  });
+  // Add null check for opponent GX button
+  if (oppGXButton) {
+    oppGXButton.addEventListener('click', () => {
+      // Prevent GX action in spectator mode or replay
+      if (
+        !(
+          systemState.isTwoPlayer &&
+          document.getElementById('spectatorModeCheckbox').checked
+        ) &&
+        !systemState.isReplay
+      ) {
+        VSTARGXFunction('opp', 'GX');
+      }
+    });
+  } else {
+    console.warn('Opponent GX Button not found');
+  }
 };
+
