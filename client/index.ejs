@@ -14,10 +14,10 @@
     <meta property="og:description" content="PTCG-sim-meta is an open-source Pokémon Trading Card Game (Pokémon TCG) tabletop simulator supporting single player and online multiplayer. Simulate your favorite card game!">
     <meta property="og:site_name" content="PTCG-sim-meta">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="src/assets/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="src/css/index.css">
+    <link rel="icon" href="/src/assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/src/css/index.css">
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
-    <script type="module" src="src/front-end.js"></script>
+    <script type="module" src="/src/front-end.js"></script>
     <script>
         window.onload = () => {
             var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -27,6 +27,7 @@
             };
         };
     </script>
+</head>
 </head>
 <body>
     <div id="importDataJSON" style="display: none;"><%= importDataJSON %></div>
