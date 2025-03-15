@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>PTCG-sim | Pokémon TCG Tabletop Simulator </title>
-    <meta name="description" content="PTCG-sim is an open-source Pokémon Trading Card Game (Pokémon TCG) tabletop simulator supporting single player and online multiplayer. Simulate your favorite card game!">
-    <meta name="keywords" content="ptcg sim,ptcg,pokemon trading card game simulator,pokemon trading card game sim,pokemon tcg simulator,pokemon tcg sim,pokemon sim,pokemon simulator,pokemon card simulator,pokemon card sim,pokemon tabletop simulator,pokemon tabletop sim,pokemon,pokemon card,pokemonsim,pokemon game sim,ptcg os,pokemon open source"/>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <meta http-equiv="Content-Language" content="en">
-    <meta property="og:title" content="Pokémon TCG Tabletop Simulator | PTCG-sim-meta"/>
-    <meta property="og:type" content="website"/>
-    <meta property="og:image" content="https://ptcg-sim-meta.pages.dev/src/assets/blank-logo.png"/>
-    <meta property="og:url" content="https://ptcg-sim-meta.pages.dev"/>
-    <meta property="og:description" content="PTCG-sim-meta is an open-source Pokémon Trading Card Game (Pokémon TCG) tabletop simulator supporting single player and online multiplayer. Simulate your favorite card game!">
-    <meta property="og:site_name" content="PTCG-sim-meta">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PTCG Sim Meta</title>
     <link rel="icon" href="src/assets/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="src/css/index.css">
+    <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+    <script>
+        const importData = JSON.parse('<%= JSON.stringify(importDataJSON) %>');
+    </script>
+    <div id="cover"></div>
+    <iframe id="selfContainer" class="self" src="./self-containers.html"></iframe>
+    <iframe id="oppContainer" class="opp" src="./opp-containers.html"></iframe>
+    <div id="twoPlayer" class="hidden">
+        <label for="roomCode">Room Code:</label>
+        <input type="text" id="roomCode" readonly>
+        <button id="copyButton">
+          <img src="https://www.svgrepo.com/show/309480/copy.svg" alt="Copy">
+        </button>
+        <label for="joinRoomCode">Join Room Code:</label>
+        <input type="text" id="joinRoomCode">
+        <button id="joinButton">Join</button>
+    </div>
+    <div id="twitter">
+        <a href="https://twitter.com/Envoyofhell" target="_blank">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Logo_of_Twitter.svg/512px-Logo_of_Twitter.svg.png">
+        </a>
+    </div>
     <script src="https://cdn.socket.io/4.7.4/socket.io.min.js"></script>
     <script type="module" src="src/front-end.js"></script>
-    <script>
-        window.onload = () => {
-            var isMobile = /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            
-            if (isMobile) {
-                alert("PTCG-sim is still in mobile development. Please use a desktop for full functionality.");
-            };
-        };
-    </script>
-</head>
+</body>
+</html>
 <body>
     <div id="importDataJSON" style="display: none;"><%= importDataJSON %></div>
     <div id="cover"></div>
