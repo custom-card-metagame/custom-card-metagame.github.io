@@ -1,3 +1,7 @@
 {
-  "name": "ptcg-sim-client"
+  "name": "ptcg-sim-meta-client",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "mkdir -p dist && cp -r *.html src dist/"
+  }
 }
