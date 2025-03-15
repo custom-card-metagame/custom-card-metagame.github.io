@@ -52,13 +52,13 @@ export const systemState = {
   selfDeckData: '',
   p1OppDeckData: '', // refers to the opponent's data in 1 player mode, i.e., the "alt" deck data
   p2OppDeckData: '', // refers to the opponent's data in 2 player mode, i.e., the other player's deck data
-  cardBackSrc: 'https://ptcg-sim-meta.pages.dev/src/assets/cardback.png',
-  p1OppCardBackSrc: 'https://ptcg-sim-meta.pages.dev/src/assets/cardback.png',
-  p2OppCardBackSrc: 'https://ptcg-sim-meta.pages.dev/src/assets/cardback.png',
+  cardBackSrc: './assets/ccb.png',
+  p1OppCardBackSrc: './assets/ccb.png',
+  p2OppCardBackSrc: './assets/ccb.png',
 };
 
 // preload image
-preloadImage('https://ptcgsim.online/src/assets/cardback.png');
+preloadImage('https://ptcg-sim-meta.pages.dev/src/assets/ccb.png');
 
 document.body.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://static0.gamerantimages.com/wordpress/wp-content/uploads/wm/2025/03/pokemon-legends-z-a-totodile-with-lumiose-bg.jpg')`;
 document.body.style.backgroundPosition = '-200px 0';

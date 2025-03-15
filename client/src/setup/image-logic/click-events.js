@@ -271,7 +271,7 @@ export const doubleClick = (event) => {
     overlay.style.left = '0';
     overlay.style.width = '100%';
     overlay.style.height = '100%';
-    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)'; // Semi-transparent
+    overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'; // Semi-transparent
 
     // Create a new image element
     let display = document.createElement('img');
