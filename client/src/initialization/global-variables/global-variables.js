@@ -60,7 +60,7 @@ export const systemState = {
 // preload image
 preloadImage('https://ptcgsim.online/src/assets/cardback.png');
 
-document.body.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://wallpapercave.com/wp/wp10484598.jpg')`;
+document.body.style.backgroundImage = `linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)), url('https://static0.gamerantimages.com/wordpress/wp-content/uploads/wm/2025/03/pokemon-legends-z-a-totodile-with-lumiose-bg.jpg')`;
 document.body.style.backgroundPosition = '-200px 0';
 
 // create global variable that holds the information of a selected card, i.e., the card that has been clicked and highlighted and can trigger keybinds
