@@ -1,7 +1,18 @@
+import {
+  changeBackground,
+  darkMode,
+  showOutlines,
+} from '../../../setup/settings/settings.js';
+import { systemState } from '../../../front-end.js';
+import {
+  lookAtCards,
+  stopLookingAtCards,
+} from '../../../actions/general/reveal-and-hide.js';
+
 export const initializeSettings = () => {
   const darkModeCheckbox = document.getElementById('darkModeCheckbox');
 
-  // Set the checkbox to be checked and enable dark mode by default
+  // Set the default state for dark mode
   darkModeCheckbox.checked = true; // Check the checkbox by default
   darkMode(); // Call the darkMode function to apply dark mode styles immediately
 
