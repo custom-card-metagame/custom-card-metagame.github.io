@@ -89,34 +89,45 @@ async function main() {
     mode: 'development',
   });
 
-  app.set('view engine', 'ejs');
-  app.set('views', clientDir);
   app.use(cors());
-  app.use(express.static(clientDir));
-  app.get('/', (_, res) => {
-    res.render('index', { importDataJSON: null });
-  });
-  app.get('/import', (req, res) => {
+app.use(express.static(clientDir));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(clientDir, 'index.html'));
+});
+
+app.get('/import', (req, res) => {
     const key = req.query.key;
     if (!key) {
-      return res.status(400).json({ error: 'Key parameter is missing' });
+        return res.status(400).json({ error: 'Key parameter is missing' });
+    }
+    res.sendFile(path.join(clientDir, 'import.html'));
+});
+
+app.get('/api/importData', (req, res) => {
+    const key = req.query.key;
+    if (!key) {
+        return res.status(400).json({ error: 'Key parameter is missing' });
     }
 
-    db.get(
-      'SELECT value FROM KeyValuePairs WHERE key = ?',
-      [key],
-      (err, row) => {
+    db.get('SELECT value FROM KeyValuePairs WHERE key = ?', [key], (err, row) => {
         if (err) {
-          return res.status(500).json({ error: 'Internal server error' });
+            return res.status(500).json({ error: 'Internal server error' });
         }
         if (row) {
-          res.render('index', { importDataJSON: row.value });
+            try {
+                const jsonData = JSON.parse(row.value);
+                res.json(jsonData);
+            } catch (parseError) {
+                return res.status(500).json({ error: 'Error parsing JSON data' });
+            }
+
         } else {
-          res.status(404).json({ error: 'Key not found' });
+            res.status(404).json({ error: 'Key not found' });
         }
-      }
-    );
-  });
+    });
+});
+
 
   const roomInfo = new Map();
   // Function to periodically clean up empty rooms
