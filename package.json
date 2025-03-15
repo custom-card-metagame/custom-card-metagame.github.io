@@ -1,20 +1,23 @@
 {
-  "name": "ptcg-sim-meta-client",
+  "name": "ptcg-sim-meta",
   "version": "1.5.1.1",
-  "description": "Client for PTCG Sim Meta - Pokémon TCG Tabletop Simulator",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
   "scripts": {
-    "build": "mkdir -p dist && cp -r *.html src dist/"
-  },
-  "dependencies": {
-    "socket.io-client": "^4.7.4"
+    "start": "pnpm -C server start",
+    "lint": "eslint .",
+    "format": "prettier --write \"**/*.{js,json,md}\""
   },
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
     "eslint": "^9.20.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "private": true
+    "eslint-plugin-prettier": "^5.2.3",
+    "globals": "^15.14.0",
+    "nodemon": "^3.1.9",
+    "prettier": "^3.2.5"
+  }
 }

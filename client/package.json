@@ -2,6 +2,19 @@
   "name": "ptcg-sim-meta-client",
   "version": "1.0.0",
   "scripts": {
-    "build": "mkdir -p dist && cp -r *.html src dist/"
-  }
+    "build": "node process-ejs.js"
+  },
+  "dependencies": {
+    "socket.io-client": "^4.7.4",
+    "ejs": "^3.1.9"
+  },
+  "devDependencies": {
+    "eslint": "^9.20.0",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "private": true
 }
