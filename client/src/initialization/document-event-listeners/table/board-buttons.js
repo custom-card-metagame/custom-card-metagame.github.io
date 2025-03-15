@@ -11,43 +11,22 @@ import { refreshBoardImages } from '../../../setup/sizing/refresh-board.js';
 
 export const initializeBoardButtons = () => {
   const turnButton = document.getElementById('turnButton');
+  turnButton?.addEventListener('click', () =>
+    takeTurn(systemState.initiator, systemState.initiator)
+  );
+
   const flipCoinButton = document.getElementById('flipCoinButton');
+  flipCoinButton?.addEventListener('click', () =>
+    flipCoin(systemState.initiator)
+  );
+
   const flipBoardButton = document.getElementById('flipBoardButton');
+  flipBoardButton?.addEventListener('click', flipBoard);
+
   const refreshButton = document.getElementById('refreshButton');
+  refreshButton?.addEventListener('click', refreshBoardImages);
 
-  // Turn Button
-  if (turnButton) {
-    turnButton.addEventListener('click', () =>
-      takeTurn(systemState.initiator, systemState.initiator)
-    );
-  } else {
-    console.warn('Turn Button not found');
-  }
-
-  // Flip Coin Button
-  if (flipCoinButton) {
-    flipCoinButton.addEventListener('click', () =>
-      flipCoin(systemState.initiator)
-    );
-  } else {
-    console.warn('Flip Coin Button not found');
-  }
-
-  // Flip Board Button
-  if (flipBoardButton) {
-    flipBoardButton.addEventListener('click', flipBoard);
-  } else {
-    console.warn('Flip Board Button not found');
-  }
-
-  // Refresh Button
-  if (refreshButton) {
-    refreshButton.addEventListener('click', refreshBoardImages);
-  } else {
-    console.warn('Refresh Button not found');
-  }
-
-  // Wait for iframes to load before accessing their contents
+  // Function to initialize iframe buttons
   const initializeIframeButtons = () => {
     // Self VSTAR Button
     const selfVSTARButton = selfContainerDocument.getElementById('VSTARButton');
@@ -122,20 +101,43 @@ export const initializeBoardButtons = () => {
     }
   };
 
-  // Ensure iframes are loaded before trying to access their contents
-  if (selfContainerDocument.readyState === 'complete' && 
-      oppContainerDocument.readyState === 'complete') {
-    initializeIframeButtons();
-  } else {
-    // Add load event listeners to iframes
-    const selfContainer = document.getElementById('selfContainer');
-    const oppContainer = document.getElementById('oppContainer');
+  // Multiple approaches to ensure buttons are initialized
+  // 1. Immediate initialization
+  initializeIframeButtons();
+
+  // 2. Defer initialization to next event loop
+  setTimeout(initializeIframeButtons, 0);
+
+  // 3. Add load event listeners as a fallback
+  const selfContainer = document.getElementById('selfContainer');
+  const oppContainer = document.getElementById('oppContainer');
+
+  if (selfContainer) {
+    selfContainer.addEventListener('load', initializeIframeButtons);
+  }
+
+  if (oppContainer) {
+    oppContainer.addEventListener('load', initializeIframeButtons);
+  }
+
+  // 4. Mutation observer as an additional fallback
+  const observeIframeLoad = () => {
+    const observer = new MutationObserver((mutations) => {
+      for (const mutation of mutations) {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'src') {
+          initializeIframeButtons();
+        }
+      }
+    });
 
     if (selfContainer) {
-      selfContainer.addEventListener('load', initializeIframeButtons);
+      observer.observe(selfContainer, { attributes: true });
     }
+
     if (oppContainer) {
-      oppContainer.addEventListener('load', initializeIframeButtons);
+      observer.observe(oppContainer, { attributes: true });
     }
-  }
+  };
+
+  observeIframeLoad();
 };
