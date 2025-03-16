@@ -6,6 +6,15 @@ import {
 import { processAction } from '../../setup/general/process-action.js';
 import { getZone } from '../../setup/zones/get-zone.js';
 
+/**
+ * Updates the miscCounter with new text content and applies appropriate color styling.
+ * 
+ * @param {string} user - The user ('self' or 'opp')
+ * @param {string} zoneId - The zone ID where the card is located
+ * @param {number} index - The index of the card in the zone
+ * @param {string} miscAmount - The text content to apply to the counter
+ * @param {boolean} emit - Whether to emit this action to the opponent
+ */
 export const updatemiscCounter = (
     user,
     zoneId,
@@ -135,8 +144,10 @@ export const addmiscCounter = (
         miscCounter.textContent = miscAmount ? miscAmount : 'A';
     }
 
-    targetCard.image.style.position = 'relative';
+    // This line is commented out as it's not needed for zone.element placement
+    // targetCard.image.style.position = 'relative';
 
+    // Changed positioning to left side of card, about halfway down plus a small offset
     miscCounter.style.display = 'inline-block';
     miscCounter.style.left = `${targetRect.left - zoneElementRect.left}px`;
     miscCounter.style.top = `${targetRect.top - zoneElementRect.top + targetRect.height / 2 + targetRect.height / 8}px`;
@@ -150,6 +161,11 @@ export const addmiscCounter = (
     miscCounter.style.lineHeight = `${targetRect.width / 3}px`;
     miscCounter.style.fontSize = `${targetRect.width / 6}px`;
     miscCounter.style.zIndex = '1';
+
+    // Apply the initial color right away (added line)
+    if (!miscAmount) {
+        updatemiscCounter(user, zoneId, index, miscCounter.textContent, false);
+    }
 
     const handleInput = () => {
         updatemiscCounter(user, zoneId, index, miscCounter.textContent);
