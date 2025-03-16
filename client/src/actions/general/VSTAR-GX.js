@@ -15,10 +15,12 @@ export const VSTARGXFunction = (user, type, emit = true) => {
 
   const selfGXButton = selfContainerDocument.getElementById('GXButton');
   const selfVSTARButton = selfContainerDocument.getElementById('VSTARButton');
+  const selfForteButton = selfContainerDocument.getElementById('ForteButton');
   const oppGXButton = oppContainerDocument.getElementById('GXButton');
+  const oppForteButton = oppContainerDocument.getElementById('ForteButton');
   const oppVSTARButton = oppContainerDocument.getElementById('VSTARButton');
 
-  let button;
+   let button;
   if (user === 'self') {
     if (type === 'GX') {
       button = selfGXButton;
@@ -36,7 +38,7 @@ export const VSTARGXFunction = (user, type, emit = true) => {
       button = oppForteButton;
     }
   }
-}
+
   if (button.classList.contains('used-special-move')) {
     button.classList.remove('used-special-move');
     const message = determineUsername(user) + ' reset their ' + type;
