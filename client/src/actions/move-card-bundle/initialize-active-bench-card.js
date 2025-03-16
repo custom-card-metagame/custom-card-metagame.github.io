@@ -7,7 +7,6 @@ import { addAbilityCounter } from '../counters/ability-counter.js';
 import { addDamageCounter } from '../counters/damage-counter.js';
 import { addmiscCounter } from '../counters/misc-status.js';
 import { addSpecialCondition } from '../counters/special-condition.js';
-import { addmiscCounter } from '../counters/misc-status.js';
 
 export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
   if (!movingCard.type2) {
@@ -96,7 +95,7 @@ export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
             addAbilityCounter(user, 'bench', i);
           }
           if (image.miscStatus) {
-            addAbilityCounter(user, 'active', i);
+            addmiscCounter(user, 'active', i);
           }
         }
       }
