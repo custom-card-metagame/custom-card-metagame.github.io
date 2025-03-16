@@ -135,10 +135,12 @@ export const addmiscCounter = (
         miscCounter.textContent = miscAmount ? miscAmount : 'A';
     }
 
+    targetCard.image.style.position = 'relative';
+
     miscCounter.style.display = 'inline-block';
-miscCounter.style.right = `${targetRect.right - zoneElementRect.right}px`;
-miscCounter.style.bottom = `${targetRect.bottom - zoneElementRect.top + targetRect.bottom / 4}px`;
-zone.element.appendChild(miscCounter);
+    miscCounter.style.left = `${targetRect.left - zoneElementRect.left}px`;
+    miscCounter.style.top = `${targetRect.top - zoneElementRect.top + targetRect.height / 2 + targetRect.height / 8}px`;
+    zone.element.appendChild(miscCounter);
 
     if (targetCard.image.parentElement.classList.contains('full-view')) {
         miscCounter.style.display = 'none';
