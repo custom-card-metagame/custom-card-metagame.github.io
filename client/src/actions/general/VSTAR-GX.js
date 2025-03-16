@@ -22,16 +22,21 @@ export const VSTARGXFunction = (user, type, emit = true) => {
   if (user === 'self') {
     if (type === 'GX') {
       button = selfGXButton;
-    } else {
+    } else if (type === 'VSTAR') {
       button = selfVSTARButton;
+    } else if (type === 'Forte') {
+      button = selfForteButton;
     }
   } else {
     if (type === 'GX') {
       button = oppGXButton;
-    } else {
+    } else if (type === 'VSTAR') {
       button = oppVSTARButton;
+    } else if (type === 'Forte') {
+      button = oppForteButton;
     }
   }
+}
   if (button.classList.contains('used-special-move')) {
     button.classList.remove('used-special-move');
     const message = determineUsername(user) + ' reset their ' + type;
