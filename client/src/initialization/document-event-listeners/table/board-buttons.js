@@ -84,7 +84,25 @@ export const initializeBoardButtons = () => {
         }
       });
     }
-
+    // Self Forte Button
+    const selfForteButton = selfContainerDocument.getElementById('ForteButton');
+    if (selfForteButton) {
+      // Remove any existing listeners first
+      const clonedButton = selfForteButton.cloneNode(true);
+      selfForteButton.parentNode.replaceChild(clonedButton, selfForteButton);
+      
+      clonedButton.addEventListener('click', () => {
+        if (
+          !(
+            systemState.isTwoPlayer &&
+            document.getElementById('spectatorModeCheckbox').checked
+          ) &&
+          !systemState.isReplay
+        ) {
+          VSTARGXFunction('self', 'Forte');
+        }
+      });
+    }
     // Opponent VSTAR Button
     const oppVSTARButton = oppContainerDocument.getElementById('VSTARButton');
     if (oppVSTARButton) {
@@ -124,7 +142,26 @@ export const initializeBoardButtons = () => {
         }
       });
     }
-  };
+  // Opponent Forte Button
+  const oppForteButton = oppContainerDocument.getElementById('ForteButton');
+  if (oppForteButton) {
+    // Remove any existing listeners first
+    const clonedButton = oppForteButton.cloneNode(true);
+    oppForteButton.parentNode.replaceChild(clonedButton, oppForteButton);
+    
+    clonedButton.addEventListener('click', () => {
+      if (
+        !(
+          systemState.isTwoPlayer &&
+          document.getElementById('spectatorModeCheckbox').checked
+        ) &&
+        !systemState.isReplay
+      ) {
+        VSTARGXFunction('opp', 'Forte');
+      }
+    });
+  }
+};
 
   // Ensure buttons are initialized
   initializeIframeButtons();
