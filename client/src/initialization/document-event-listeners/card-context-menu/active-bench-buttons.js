@@ -14,6 +14,14 @@ export const initializeActiveAndBenchButtons = () => {
     );
   });
 
+  const miscCounterButton = document.getElementById('miscCounterButton');
+  miscCounterButton.addEventListener('click', () => {
+    addDamageCounter(
+      mouseClick.cardUser,
+      mouseClick.zoneId,
+      mouseClick.cardIndex
+    );
+  });
   const specialConditionButton = document.getElementById(
     'specialConditionButton'
   );

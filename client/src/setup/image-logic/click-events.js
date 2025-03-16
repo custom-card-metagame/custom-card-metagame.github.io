@@ -94,6 +94,10 @@ export const openCardContextMenu = (event) => {
       [true, 'active'],
       [true, 'bench'],
     ],
+    miscCounterButton: [
+      [true, 'active'],
+      [true, 'bench'],
+    ],
     specialConditionButton: [[true, 'active']],
     shufflePrizesButton: [[selfView, 'prizes']],
     lookPrizesButton: [[true, 'prizes']],
