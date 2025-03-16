@@ -117,7 +117,7 @@ export const addmiscCounter = (
                 systemState.initiator === 'self' ? 'opp-circle' : 'self-circle';
         }
         miscCounter.contentEditable = 'true';
-        miscCounter.textContent = miscAmount ? miscAmount : '10';
+        miscCounter.textContent = miscAmount ? miscAmount : 'A';
     }
 
     miscCounter.style.display = 'inline-block';
