@@ -65,18 +65,33 @@ export const updatemiscCounter = (
 
 export const removemiscCounter = (user, zoneId, index, emit = true) => {
     if (user === 'opp' && emit && systemState.isTwoPlayer) {
-        processAction(user, emit, 'removemiscCounter', [zoneId, index]);
-        return;
+      processAction(user, emit, 'removemiscCounter', [zoneId, index]);
+      return;
     }
-
-    const miscCounter = getZone(user, zoneId).array[index].image.miscCounter;
-    if (miscCounter) {
-        miscCounter.remove();
-        getZone(user, zoneId).array[index].image.miscCounter = null;
+  
+    const targetCard = getZone(user, zoneId).array[index];
+    //make sure targetCard exists (it won't exist if it's already been removed)
+    if (targetCard.image.miscCounter) {
+      targetCard.image.miscCounter.removeEventListener(
+        'input',
+        targetCard.image.miscCounter.handleInput
+      );
+      targetCard.image.miscCounter.handleInput = null;
+      targetCard.image.miscCounter.removeEventListener(
+        'blur',
+        targetCard.image.miscCounter.handleRemoveWrapper
+      );
+      targetCard.image.miscCounter.handleRemove = null;
+      window.removeEventListener(
+        'resize',
+        targetCard.image.miscCounter.handleResize
+      );
+      targetCard.image.miscCounter.remove();
+      targetCard.image.miscCounter = null;
     }
-
+  
     processAction(user, emit, 'removemiscCounter', [zoneId, index]);
-};
+  };
 
 export const addmiscCounter = (
     user,
@@ -121,8 +136,8 @@ export const addmiscCounter = (
     }
 
     miscCounter.style.display = 'inline-block';
-miscCounter.style.right = '10px'; // Position from the right
-miscCounter.style.bottom = '20px'; // Position from the bottom (adjust as needed)
+miscCounter.style.right = `${targetRect.right - zoneElementRect.right}px`;
+miscCounter.style.bottom = `${targetRect.bottom - zoneElementRect.top + targetRect.bottom / 4}px`;
 zone.element.appendChild(miscCounter);
 
     if (targetCard.image.parentElement.classList.contains('full-view')) {

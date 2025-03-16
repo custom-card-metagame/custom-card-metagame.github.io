@@ -249,6 +249,9 @@ export const doubleClick = (event) => {
       if (image.specialCondition) {
         image.specialCondition.style.display = 'none';
       }
+      if (image.miscCounter) {
+        image.miscCounter.style.display = 'none';
+      }
       if (image.abilityCounter) {
         image.abilityCounter.style.display = 'none';
       }
