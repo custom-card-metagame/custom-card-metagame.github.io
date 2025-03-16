@@ -123,7 +123,7 @@ import {
   
     miscCounter.style.display = 'inline-block';
     miscCounter.style.left = `${targetRect.left - zoneElementRect.left + targetRect.width / 1.5}px`;
-    miscCounter.style.top = `${targetRect.top - zoneElementRect.top + targetRect.height / 4}px`;
+    miscCounter.style.bottom = `10px`;
     zone.element.appendChild(miscCounter);
   
     if (targetCard.image.parentElement.classList.contains('full-view')) {

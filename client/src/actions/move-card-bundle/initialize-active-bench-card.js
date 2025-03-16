@@ -52,7 +52,7 @@ export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
               addAbilityCounter(user, 'bench', i);
             }
             if (image.miscStatus) {
-              addmiscCounter(user, 'active', i);
+              addmiscCounter(user, 'bench', i);
             }
           }
         }
