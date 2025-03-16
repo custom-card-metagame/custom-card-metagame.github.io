@@ -121,9 +121,9 @@ export const addmiscCounter = (
     }
 
     miscCounter.style.display = 'inline-block';
-    miscCounter.style.left = `${targetRect.left - zoneElementRect.left + targetRect.width / 1.5}px`;
-    miscCounter.style.bottom = `10px`;
-    zone.element.appendChild(miscCounter);
+miscCounter.style.right = '10px'; // Position from the right
+miscCounter.style.bottom = '20px'; // Position from the bottom (adjust as needed)
+zone.element.appendChild(miscCounter);
 
     if (targetCard.image.parentElement.classList.contains('full-view')) {
         miscCounter.style.display = 'none';
