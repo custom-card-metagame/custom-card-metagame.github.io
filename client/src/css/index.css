@@ -466,6 +466,11 @@ ul, li {
 #FREEBUTTON, #p2FREEBUTTON {
   border-radius: .5vw 0 0 .5vw;
 }
+.centered-paragraph {
+  display: block;
+  width: fit-content;
+  margin: 0 auto;
+}
 #messageInput {
   width: 100%;
   padding: 10px;
