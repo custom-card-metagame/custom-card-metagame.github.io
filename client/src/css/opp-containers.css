@@ -80,8 +80,23 @@ body, input, textarea, button {
 .highlightBox {
   background-color: rgba(188, 90, 113, 0.3);
 }
+@keyframes neonPulse {
+  0%, 100% {
+    box-shadow: 
+      0 0 5px rgba(255, 85, 100, 0.5),  /* Thinner glow */
+      0 0 10px rgba(255, 85, 100, 0.4),
+      0 0 15px rgba(255, 85, 100, 0.3);   /* Reduced glow */
+  }
+  50% {
+    box-shadow: 
+      0 0 10px rgba(255, 85, 100, 0.6),
+      0 0 15px rgba(255, 85, 100, 0.5),
+      0 0 20px rgba(255, 85, 100, 0.4);   /* Slightly increased second stage */
+  }
+}
+
 #hand {
-  border-top: 3px solid rgba(188, 90, 113, 0.864);  
+  border-top: 4px solid rgba(255, 85, 100, 0.864); /* Thicker */
   position: fixed;
   bottom: 0;
   left: 0;
@@ -91,7 +106,11 @@ body, input, textarea, button {
   display: flex;
   z-index: 0;
   align-items: flex-end;
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+  animation: neonPulse 2s infinite; /* Add pulse animation */
 }
+
 #hand img {
   box-sizing: border-box;
   width: auto;
