@@ -1,6 +1,14 @@
 /**
- * Comprehensive list of Pokémon locations from various regions
- * Used for generating unique room IDs
+ * @file pokemonLocations.js
+ * @description Comprehensive list of Pokémon locations for room ID generation
+ * @version 2.0.0
+ * @author Meta-PTCG Development Team
+ */
+
+/**
+ * Extensive list of Pokémon locations from various regions and games
+ * Organized by region and significance for diverse room ID generation
+ * @type {string[]}
  */
 export const POKEMON_LOCATIONS = [
   // Kanto Regions
@@ -149,7 +157,7 @@ export const POKEMON_LOCATIONS = [
   'Stow-on-Side',
   'Ballonlea',
   'Snowslide Slope',
-  "Giant's Bed",
+  'Giants Bed',
   'Dyna Tree Hill',
   'Rose Tower',
   'Energy Plant',
@@ -176,15 +184,60 @@ export const POKEMON_LOCATIONS = [
   'South Province',
   'Casseroya Lake',
 
+  // Legendary and Mythical Locations
+  'Sinjoh Ruins',
+  'Spear Pillar',
+  'Distortion World',
+  'Hall of Origin',
+  'Legendary Shrine',
+  'Poké Pelago',
+  'Orre Region',
+  'Revorама Region',
+
   // Additional Unique Locations
   'Pokemon League',
   'Safari Zone',
   'Unknown Dungeon',
-  'Distortion World',
+  'Battle Frontier',
   'Pokemon World Tournament',
   'Battle Resort',
   'Parfum Palace',
   'Cerulean Cave',
   'Mt. Coronet',
   'Hoenn Battle Frontier',
+
+  // Special Event and Spin-off Locations
+  'Pokemon Stadium',
+  'Johto Safari Zone',
+  'Ranger Union',
+  'Pokemon Colosseum',
+  'XD Laboratory',
+  'Mystery Dungeon',
+  'Ranger School',
+  'Oblivia Ranger Base',
+  'Fiore Region',
+
+  // Unique Landscape Locations
+  'Crystal Cavern',
+  'Volcanic Island',
+  'Ancient Ruins',
+  'Misty Forest',
+  'Frozen Tundra',
+  'Desert Oasis',
+  'Mystic Archipelago',
+  'Starlight Peak',
+  'Moonlight Plateau',
+  'Sunrise Valley',
+  'Thunderstorm Plains',
+
+  // Mythical and Legendary Encounter Locations
+  'Serpent Cave',
+  "Dragon's Den",
+  'Mystical Grove',
+  'Celestial Peak',
+  'Temporal Tower',
+  'Dimensional Rift',
+  'Cosmic Observatory',
+  'Primordial Landscape',
+  'Legendary Sanctum',
 ];

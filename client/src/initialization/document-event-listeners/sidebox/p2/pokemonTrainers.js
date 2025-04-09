@@ -1,9 +1,17 @@
 /**
- * Comprehensive list of Pokémon trainers from various games and media
- * Used for generating random player names
+ * @file pokemonTrainers.js
+ * @description Comprehensive list of Pokémon trainers for username generation
+ * @version 2.0.0
+ * @author Meta-PTCG Development Team
+ */
+
+/**
+ * Extensive list of Pokémon trainers from various games, anime, and media
+ * Organized by category and significance for diverse username generation
+ * @type {string[]}
  */
 export const POKEMON_TRAINERS = [
-  // Protagonists
+  // Protagonists and Main Characters
   'Red',
   'Ash',
   'Leaf',
@@ -31,8 +39,10 @@ export const POKEMON_TRAINERS = [
   'Akari',
   'Liko',
   'Roy',
+  'Zacian',
+  'Zamazenta',
 
-  // Rivals
+  // Rivals and Competitive Trainers
   'Blue',
   'Silver',
   'Barry',
@@ -43,9 +53,16 @@ export const POKEMON_TRAINERS = [
   'Trevor',
   'Gladion',
   'Trace',
-  'Hop',
-  'Marnie',
-  'Bede',
+  'Wally',
+  'Paul',
+  'Trip',
+  'Alain',
+  'Sawyer',
+  'Georgia',
+  'Cameron',
+  'Stephan',
+  'Ritchie',
+  'Kenny',
 
   // Gym Leaders
   'Brock',
@@ -82,7 +99,6 @@ export const POKEMON_TRAINERS = [
   'Viola',
   'Grant',
   'Korrina',
-  'Clembot',
   'Ramos',
   'Clemont',
   'Valerie',
@@ -114,13 +130,13 @@ export const POKEMON_TRAINERS = [
   'Lucian',
   'Cynthia',
   'Alder',
-  'Iris',
   'Diantha',
   'Leon',
-  'Mustard',
   'Geeta',
+  'Wallace',
+  'Drake',
 
-  // Evil Team Leaders
+  // Evil Team Leaders and Antagonists
   'Giovanni',
   'Archie',
   'Maxie',
@@ -128,12 +144,18 @@ export const POKEMON_TRAINERS = [
   'N',
   'Ghetsis',
   'Lysandre',
-  'Sakaki',
   'Chairman Rose',
   'Oleana',
+  'Lusamine',
+  'Guzma',
   'Team Star Leaders',
+  'Alvin',
+  'Zero',
+  'Nascour',
+  'Evice',
+  'Greevil',
 
-  // Professors and Supporting Characters
+  // Professors and Researchers
   'Oak',
   'Elm',
   'Birch',
@@ -146,25 +168,24 @@ export const POKEMON_TRAINERS = [
   'Sonia',
   'Willow',
   'Samuel',
-  'Elm',
   'Rowan',
+  'Kyurem',
 
   // Anime and Movie Characters
   'Gary',
-  'Trip',
-  'Cameron',
-  'Alain',
-  'Sawyer',
-  'Paul',
-  'Kenny',
-  'Conway',
-  'Ritchie',
-  'Harrison',
   'Tobias',
   'Virgil',
-  'Stephan',
+  'Sawyer',
+  'Conway',
+  'Harrison',
+  'Ritchie',
+  'Jimmy',
+  'Marina',
+  'Melody',
+  'Lawrence',
+  'Spencer',
 
-  // Other Notable Trainers
+  // Supporting Characters and Unique Trainers
   'Wally',
   'Youngster Joey',
   'Hau',
@@ -185,5 +206,56 @@ export const POKEMON_TRAINERS = [
   'Kukui',
   'Burnet',
   'Sonia',
-  'Hop',
+  'AZ',
+  'Peonia',
+  'Colress',
+  'Thorton',
+  'Cyllene',
+  'Acerola',
+  'Arven',
+
+  // Unique and Memorable Trainers
+  'Volo',
+  'Raihan',
+  'Iono',
+  'Tulip',
+  'Nemona',
+  'Penny',
+  'Brassius',
+  'Ryme',
+  'Larry',
+  'Grusha',
+  'Kofu',
+  'Rafe',
+  'Ortega',
+  'Alfornada',
+
+  // Legendary and Mythical Trainer-like Figures
+  'Archie',
+  'Maxie',
+  'Giovanni',
+  'Lusamine',
+  'Lysandre',
+  'Ghetsis',
+  'N',
+  'Cyrus',
+  'Zinnia',
+  'Damos',
+  'Marcus',
+  'Newton',
+  'Riley',
+
+  // Unique and Rare Trainers
+  'Duplicate',
+  'XD001',
+  'Shadow',
+  'Cipher',
+  'Enigma',
+  'Phantom',
+  'Blaze',
+  'Storm',
+  'Nova',
+  'Zenith',
+  'Ranger',
+  'Guardian',
 ];
