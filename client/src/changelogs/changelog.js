@@ -1,6 +1,6 @@
 // changelog.js - Main script to handle changelog functionality
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   // --------------------------------------------------------------------------
   // 1. Get references to DOM elements
   // --------------------------------------------------------------------------
@@ -16,21 +16,55 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initially hide the changelog div
   changelogDiv.style.display = 'none';
 
+  // Try to update version in the meta changelog link from the meta changelog content
+  try {
+    if (window.metaChangelogContent) {
+      // Create a temporary div to parse the HTML content
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = window.metaChangelogContent;
+
+      // Get the first h2 element (which should contain the version)
+      const firstH2 = tempDiv.querySelector('h2');
+
+      if (firstH2) {
+        // Extract version using regex to find pattern like "v0.1.1"
+        const versionMatch = firstH2.textContent.match(/v\d+\.\d+\.\d+/);
+        if (versionMatch && versionMatch[0] && metaChangelogLink) {
+          const version = versionMatch[0];
+
+          // Keep everything after the version number in the current text
+          const currentText = metaChangelogLink.textContent;
+          const suffixMatch = currentText.match(/(?:v[\d.]+)(.+)/);
+          const suffix = suffixMatch ? suffixMatch[1] : ' ✧(≖ ヮ ≖)✧';
+
+          // Update the text with new version but keep the suffix
+          metaChangelogLink.textContent = `${version}${suffix}`;
+          console.log(
+            'Updated meta changelog link to:',
+            metaChangelogLink.textContent
+          );
+        }
+      }
+    }
+  } catch (e) {
+    console.error('Error updating version number:', e);
+  }
+
   // --------------------------------------------------------------------------
   // 3. Function to toggle changelog visibility with specific content
   // --------------------------------------------------------------------------
 
   function toggleChangelog(content) {
-      if (changelogDiv.style.display === 'none') {
-          console.log("Setting changelog content:", content);
-          changelogDiv.innerHTML = content;
-          console.log("Setting changelog display: block");
-          changelogDiv.style.display = 'block';
-          console.log("changelogDiv display style:", changelogDiv.style.display);
-      } else {
-          console.log("Setting changelog display: none");
-          changelogDiv.style.display = 'none';
-      }
+    if (changelogDiv.style.display === 'none') {
+      console.log('Setting changelog content:', content);
+      changelogDiv.innerHTML = content;
+      console.log('Setting changelog display: block');
+      changelogDiv.style.display = 'block';
+      console.log('changelogDiv display style:', changelogDiv.style.display);
+    } else {
+      console.log('Setting changelog display: none');
+      changelogDiv.style.display = 'none';
+    }
   }
 
   // --------------------------------------------------------------------------
@@ -38,34 +72,37 @@ document.addEventListener('DOMContentLoaded', function() {
   // --------------------------------------------------------------------------
 
   function closeChangelog() {
-      console.log("Closing changelog");
-      changelogDiv.style.display = 'none';
-      unhighlightLinks(); // Unhighlight links when closing
+    console.log('Closing changelog');
+    changelogDiv.style.display = 'none';
+    unhighlightLinks(); // Unhighlight links when closing
   }
 
   // --------------------------------------------------------------------------
-    // 5. Event listener for the main changelog link
-    // --------------------------------------------------------------------------
+  // 5. Event listener for the main changelog link
+  // --------------------------------------------------------------------------
 
-    if (changelogLink) {
-      changelogLink.addEventListener('click', function(event) {
-          console.log("Main changelog link clicked");
-          console.log("Main Changelog Content:", window.mainChangelogContent);
-          event.stopPropagation();
+  if (changelogLink) {
+    changelogLink.addEventListener('click', function (event) {
+      console.log('Main changelog link clicked');
+      console.log('Main Changelog Content:', window.mainChangelogContent);
+      event.stopPropagation();
 
-          if (changelogDiv.style.display === 'block' && changelogDiv.innerHTML === window.mainChangelogContent) {
-              // If the changelog is open and showing the main changelog, close it
-              closeChangelog();
-          } else {
-              // Otherwise, close any open changelog and open the main changelog
-              if (changelogDiv.style.display === 'block') {
-                  closeChangelog();
-              }
-              toggleChangelog(window.mainChangelogContent);
-          }
-      });
+      if (
+        changelogDiv.style.display === 'block' &&
+        changelogDiv.innerHTML === window.mainChangelogContent
+      ) {
+        // If the changelog is open and showing the main changelog, close it
+        closeChangelog();
+      } else {
+        // Otherwise, close any open changelog and open the main changelog
+        if (changelogDiv.style.display === 'block') {
+          closeChangelog();
+        }
+        toggleChangelog(window.mainChangelogContent);
+      }
+    });
   } else {
-      console.warn("Main changelog link element not found.");
+    console.warn('Main changelog link element not found.');
   }
 
   // --------------------------------------------------------------------------
@@ -73,47 +110,52 @@ document.addEventListener('DOMContentLoaded', function() {
   // --------------------------------------------------------------------------
 
   if (metaChangelogLink) {
-      metaChangelogLink.addEventListener('click', function(event) {
-          console.log("Meta changelog link clicked");
-          console.log("Meta Changelog Content:", window.metaChangelogContent);
-          event.stopPropagation();
+    metaChangelogLink.addEventListener('click', function (event) {
+      console.log('Meta changelog link clicked');
+      console.log('Meta Changelog Content:', window.metaChangelogContent);
+      event.stopPropagation();
 
-          if (changelogDiv.style.display === 'block' && changelogDiv.innerHTML === window.metaChangelogContent) {
-              // If the changelog is open and showing the meta changelog, close it
-              closeChangelog();
-          } else {
-              // Otherwise, close any open changelog and open the meta changelog
-              if (changelogDiv.style.display === 'block') {
-                  closeChangelog();
-              }
-              toggleChangelog(window.metaChangelogContent);
-          }
-      });
+      if (
+        changelogDiv.style.display === 'block' &&
+        changelogDiv.innerHTML === window.metaChangelogContent
+      ) {
+        // If the changelog is open and showing the meta changelog, close it
+        closeChangelog();
+      } else {
+        // Otherwise, close any open changelog and open the meta changelog
+        if (changelogDiv.style.display === 'block') {
+          closeChangelog();
+        }
+        toggleChangelog(window.metaChangelogContent);
+      }
+    });
   } else {
-      console.warn("Meta changelog link element not found.");
+    console.warn('Meta changelog link element not found.');
   }
 
   // --------------------------------------------------------------------------
   // 7. Close changelog when clicking outside of it
   // --------------------------------------------------------------------------
 
-  document.addEventListener('click', function(event) {
-      if (changelogDiv.style.display === 'block' &&
-          !changelogDiv.contains(event.target) &&
-          event.target !== changelogLink &&
-          event.target !== metaChangelogLink) {
-          closeChangelog();
-      }
+  document.addEventListener('click', function (event) {
+    if (
+      changelogDiv.style.display === 'block' &&
+      !changelogDiv.contains(event.target) &&
+      event.target !== changelogLink &&
+      event.target !== metaChangelogLink
+    ) {
+      closeChangelog();
+    }
   });
 
   // --------------------------------------------------------------------------
   // 8. Feature: Close changelog on Escape key press
   // --------------------------------------------------------------------------
 
-  document.addEventListener('keydown', function(event) {
-      if (event.key === 'Escape' && changelogDiv.style.display === 'block') {
-          closeChangelog();
-      }
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape' && changelogDiv.style.display === 'block') {
+      closeChangelog();
+    }
   });
 
   // --------------------------------------------------------------------------
@@ -127,8 +169,8 @@ document.addEventListener('DOMContentLoaded', function() {
   closeButton.style.right = '10px';
   closeButton.style.cursor = 'pointer';
 
-  closeButton.addEventListener('click', function() {
-      closeChangelog();
+  closeButton.addEventListener('click', function () {
+    closeChangelog();
   });
 
   changelogDiv.appendChild(closeButton);
@@ -138,34 +180,34 @@ document.addEventListener('DOMContentLoaded', function() {
   // --------------------------------------------------------------------------
 
   function highlightLink(link) {
-      if (link) {
-          link.style.fontWeight = 'bold';
-          link.style.textDecoration = 'underline';
-      }
+    if (link) {
+      link.style.fontWeight = 'bold';
+      link.style.textDecoration = 'underline';
+    }
   }
 
   function unhighlightLinks() {
-      if (changelogLink) {
-          changelogLink.style.fontWeight = 'normal';
-          changelogLink.style.textDecoration = 'none';
-      }
-      if (metaChangelogLink) {
-          metaChangelogLink.style.fontWeight = 'normal';
-          metaChangelogLink.style.textDecoration = 'none';
-      }
+    if (changelogLink) {
+      changelogLink.style.fontWeight = 'normal';
+      changelogLink.style.textDecoration = 'none';
+    }
+    if (metaChangelogLink) {
+      metaChangelogLink.style.fontWeight = 'normal';
+      metaChangelogLink.style.textDecoration = 'none';
+    }
   }
 
   if (changelogLink) {
-      changelogLink.addEventListener('click', function() {
-          unhighlightLinks();
-          highlightLink(changelogLink);
-      });
+    changelogLink.addEventListener('click', function () {
+      unhighlightLinks();
+      highlightLink(changelogLink);
+    });
   }
 
   if (metaChangelogLink) {
-      metaChangelogLink.addEventListener('click', function() {
-          unhighlightLinks();
-          highlightLink(metaChangelogLink);
-      });
+    metaChangelogLink.addEventListener('click', function () {
+      unhighlightLinks();
+      highlightLink(metaChangelogLink);
+    });
   }
 });
