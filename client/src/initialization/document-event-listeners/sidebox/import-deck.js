@@ -115,7 +115,7 @@ export const initializeImport = () => {
 
   const deckBuilderButton = document.getElementById('deckBuilderButton');
   deckBuilderButton.addEventListener('click', function () {
-    window.open('https://tishinator.github.io/PTCGDeckBuilder/');
+    window.open('https://deckbuilder.meta-ptcg.org/');
   });
 
   const importExportGameStateButton = document.getElementById(
