@@ -1,5 +1,5 @@
 import { addDamageCounter } from '../../../actions/counters/damage-counter.js';
-import { addmiscCounter } from '../../../actions/counters/misc-status.js';
+import { showMarkerSelectionWindow } from '../../../actions/counters/misc-status.js';
 import { addSpecialCondition } from '../../../actions/counters/special-condition.js';
 import { useAbility } from '../../../actions/counters/use-ability.js';
 import { changeType } from '../../../actions/general/change-type.js';
@@ -16,8 +16,15 @@ export const initializeActiveAndBenchButtons = () => {
   });
 
   const miscCounterButton = document.getElementById('miscCounterButton');
-  miscCounterButton.addEventListener('click', () => {
-    addmiscCounter(
+  miscCounterButton.addEventListener('click', (event) => {
+    // Prevent the context menu from closing immediately
+    event.stopPropagation();
+
+    // Close the context menu
+    document.getElementById('cardContextMenu').style.display = 'none';
+
+    // Show the marker selection window
+    showMarkerSelectionWindow(
       mouseClick.cardUser,
       mouseClick.zoneId,
       mouseClick.cardIndex

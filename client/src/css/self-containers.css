@@ -399,7 +399,20 @@ body, input, textarea, button {
   background-color: rgb(255, 98, 0);
   color: white;
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
 }
+
+.self-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
 .opp-circle {
   position: absolute;
   border-radius: 50%;
@@ -407,6 +420,18 @@ body, input, textarea, button {
   color: white;
   text-align: center;
   transform: scaleX(-1) scaleY(-1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.opp-circle:hover {
+  transform: scaleX(-1) scaleY(-1) scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 .self-tab {
   position: absolute;

@@ -3,6 +3,7 @@ import {
   oppContainerDocument,
   selfContainerDocument,
 } from '../../front-end.js';
+import { closeMarkerSelectionWindow } from '../counters/misc-status.js';
 import { refreshBoard } from '../../setup/sizing/refresh-board.js';
 import { getZone } from '../../setup/zones/get-zone.js';
 
@@ -125,5 +126,6 @@ export const closePopups = (event) => {
   deselectCard();
   closeFullView(event);
   hideZoneElementsIfEmpty(event);
+  closeMarkerSelectionWindow();
   document.getElementById('cardContextMenu').style.display = 'none';
 };
