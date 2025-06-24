@@ -1,6 +1,6 @@
 import { resetImage } from '../../setup/image-logic/reset-image.js';
 import { addDamageCounter } from '../counters/damage-counter.js';
-import { addmiscCounter } from '../counters/misc-status.js';
+import { addmiscCounter, repositionMarkers } from '../counters/misc-status.js';
 import { resetRotation } from '../general/rotate-card.js';
 import { moveCard } from './move-card.js';
 
@@ -91,5 +91,17 @@ export const evolveCard = (
       moveCard(user, initiator, dZoneId, dZoneId, i, targetIndex);
       i--;
     }
+  }
+
+  // Reposition markers after evolution
+  const evolvedCard = dZone.array.find(
+    (card) => card.image === movingCard.image
+  );
+  if (
+    evolvedCard &&
+    evolvedCard.image.miscCounters &&
+    evolvedCard.image.miscCounters.length > 0
+  ) {
+    repositionMarkers(evolvedCard, dZone);
   }
 };

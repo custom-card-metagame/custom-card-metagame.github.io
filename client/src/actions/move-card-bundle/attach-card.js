@@ -1,6 +1,7 @@
 import { resetImage } from '../../setup/image-logic/reset-image.js';
 import { syncRotation } from '../general/rotate-card.js';
 import { moveCard } from './move-card.js';
+import { repositionMarkers } from '../counters/misc-status.js';
 
 export const attachCard = (
   user,
@@ -62,5 +63,13 @@ export const attachCard = (
         break;
       }
     }
+  }
+
+  // Reposition markers on the target card after attachment
+  if (
+    targetCard.image.miscCounters &&
+    targetCard.image.miscCounters.length > 0
+  ) {
+    repositionMarkers(targetCard, dZone);
   }
 };

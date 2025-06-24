@@ -2,6 +2,7 @@ import { rotateCard } from '../../actions/general/rotate-card.js';
 import { moveCard } from '../../actions/move-card-bundle/move-card.js';
 import { getZone } from '../zones/get-zone.js';
 import { adjustCards } from './resizer.js';
+import { repositionMarkers } from '../../actions/counters/misc-status.js';
 
 const refreshZone = (user, zoneId) => {
   const zone = getZone(user, zoneId);
@@ -37,6 +38,13 @@ const refreshZone = (user, zoneId) => {
     });
   });
   adjustCards(user, zoneId, 1);
+
+  // Reposition markers after refreshing
+  zone.array.forEach((card) => {
+    if (card.image.miscCounters && card.image.miscCounters.length > 0) {
+      repositionMarkers(card, zone);
+    }
+  });
 };
 
 export const refreshBoard = () => {

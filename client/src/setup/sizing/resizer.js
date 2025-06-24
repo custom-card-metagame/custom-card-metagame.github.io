@@ -1,6 +1,9 @@
 import { addAbilityCounter } from '../../actions/counters/ability-counter.js';
 import { addDamageCounter } from '../../actions/counters/damage-counter.js';
-import { addmiscCounter } from '../../actions/counters/misc-status.js';
+import {
+  addmiscCounter,
+  repositionMarkers,
+} from '../../actions/counters/misc-status.js';
 import { addSpecialCondition } from '../../actions/counters/special-condition.js';
 import { closeFullView } from '../../actions/general/close-popups.js';
 import {
@@ -239,12 +242,9 @@ export const adjustCards = (user, zoneId, ratio) => {
         false
       );
     }
-    // Handle multiple misc markers
+    // Handle multiple misc markers - just reposition them
     if (card.image.miscCounters && card.image.miscCounters.length > 0) {
-      const index = zone.array.findIndex((loopCard) => loopCard === card);
-      card.image.miscCounters.forEach((marker) => {
-        addmiscCounter(user, zoneId, index, marker.textContent, false);
-      });
+      repositionMarkers(card, zone);
     }
   });
 };

@@ -243,7 +243,7 @@ export const removemiscCounter = (
 };
 
 // Helper function to reposition markers after removal
-const repositionMarkers = (targetCard, zone) => {
+export const repositionMarkers = (targetCard, zone) => {
   if (
     !targetCard.image.miscCounters ||
     targetCard.image.miscCounters.length === 0

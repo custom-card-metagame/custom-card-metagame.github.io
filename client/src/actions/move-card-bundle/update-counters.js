@@ -1,6 +1,6 @@
 import { addAbilityCounter } from '../counters/ability-counter.js';
 import { addDamageCounter } from '../counters/damage-counter.js';
-import { addmiscCounter } from '../counters/misc-status.js';
+import { addmiscCounter, removemiscCounter } from '../counters/misc-status.js';
 import { addSpecialCondition } from '../counters/special-condition.js';
 
 export const updateCounters = (
@@ -65,15 +65,13 @@ export const updateCounters = (
   ) {
     const index = dZone.array.findIndex((card) => card === movingCard);
     if (counterZones.includes(dZoneId)) {
+      // Only reposition markers if moving to a supported zone
       movingCard.image.miscCounters.forEach((marker) => {
         addmiscCounter(user, dZoneId, index, marker.textContent, false);
       });
     } else {
-      // Remove all markers if moving to a zone that doesn't support counters
-      movingCard.image.miscCounters.forEach((marker) => {
-        marker.remove();
-      });
-      movingCard.image.miscCounters = [];
+      // Properly remove all markers if moving to a zone that doesn't support counters
+      removemiscCounter(user, dZoneId, index, null, false); // Remove all markers
     }
   }
   //update damage counter placements on all cards from the same origin/destination zones
@@ -92,6 +90,12 @@ export const updateCounters = (
       if (image.miscCounter) {
         addmiscCounter(user, oZoneId, i, image.miscCounter.textContent, false);
       }
+      // Handle multiple misc markers for existing cards in origin zone
+      if (image.miscCounters && image.miscCounters.length > 0) {
+        image.miscCounters.forEach((marker) => {
+          addmiscCounter(user, oZoneId, i, marker.textContent, false);
+        });
+      }
     }
   }
   if (counterZones.includes(dZoneId)) {
@@ -108,6 +112,12 @@ export const updateCounters = (
       }
       if (image.miscCounter) {
         addmiscCounter(user, dZoneId, i, image.miscCounter.textContent, false);
+      }
+      // Handle multiple misc markers for existing cards in destination zone
+      if (image.miscCounters && image.miscCounters.length > 0) {
+        image.miscCounters.forEach((marker) => {
+          addmiscCounter(user, dZoneId, i, marker.textContent, false);
+        });
       }
     }
   }

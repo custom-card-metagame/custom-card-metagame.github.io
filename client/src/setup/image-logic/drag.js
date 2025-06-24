@@ -10,6 +10,7 @@ import {
 import { getZone } from '../zones/get-zone.js';
 import { identifyCard } from './click-events.js';
 import { setDragState } from './hover-preview.js';
+import { repositionMarkers } from '../../actions/counters/misc-status.js';
 
 const popupContainers = [
   'lostZone',
@@ -296,6 +297,21 @@ export const drop = (event) => {
           targetIndex,
           'move'
         );
+
+        // Reposition markers after card movement
+        setTimeout(() => {
+          const destinationZone = getZone(mouseClick.cardUser, dZoneId);
+          if (['active', 'bench'].includes(dZoneId)) {
+            destinationZone.array.forEach((card) => {
+              if (
+                card.image.miscCounters &&
+                card.image.miscCounters.length > 0
+              ) {
+                repositionMarkers(card, destinationZone);
+              }
+            });
+          }
+        }, 100); // Small delay to ensure the move is complete
       }
     }
   }
