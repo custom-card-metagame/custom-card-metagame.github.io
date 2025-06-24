@@ -1,5 +1,6 @@
 import { addAbilityCounter } from '../../actions/counters/ability-counter.js';
 import { addDamageCounter } from '../../actions/counters/damage-counter.js';
+import { addmiscCounter } from '../../actions/counters/misc-status.js';
 import { addSpecialCondition } from '../../actions/counters/special-condition.js';
 import { closeFullView } from '../../actions/general/close-popups.js';
 import {
@@ -227,6 +228,16 @@ export const adjustCards = (user, zoneId, ratio) => {
     if (card.image.abilityCounter) {
       const index = zone.array.findIndex((loopCard) => loopCard === card);
       addAbilityCounter(user, zoneId, index);
+    }
+    if (card.image.miscCounter) {
+      const index = zone.array.findIndex((loopCard) => loopCard === card);
+      addmiscCounter(
+        user,
+        zoneId,
+        index,
+        card.image.miscCounter.textContent,
+        false
+      );
     }
   });
 };

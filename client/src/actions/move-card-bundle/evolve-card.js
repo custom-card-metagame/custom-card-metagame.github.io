@@ -1,5 +1,6 @@
 import { resetImage } from '../../setup/image-logic/reset-image.js';
 import { addDamageCounter } from '../counters/damage-counter.js';
+import { addmiscCounter } from '../counters/misc-status.js';
 import { resetRotation } from '../general/rotate-card.js';
 import { moveCard } from './move-card.js';
 
@@ -22,6 +23,18 @@ export const evolveCard = (
     //remove once opponent is finished with it
     targetCard.image.damageCounter.textContent = '0';
     targetCard.image.damageCounter.handleRemove();
+  }
+  if (targetCard.image.miscCounter) {
+    addmiscCounter(
+      user,
+      dZoneId,
+      dZone.getCount() - 1,
+      targetCard.image.miscCounter.textContent,
+      false
+    );
+    //remove the old misc counter
+    targetCard.image.miscCounter.textContent = '0';
+    targetCard.image.miscCounter.handleRemove();
   }
   if (targetCard.image.specialCondition) {
     targetCard.image.specialCondition.textContent = '0';

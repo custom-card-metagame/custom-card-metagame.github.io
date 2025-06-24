@@ -50,8 +50,14 @@ export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
             if (image.abilityCounter) {
               addAbilityCounter(user, 'bench', i);
             }
-            if (image.miscStatus) {
-              addmiscCounter(user, 'bench', i);
+            if (image.miscCounter) {
+              addmiscCounter(
+                user,
+                'bench',
+                i,
+                image.miscCounter.textContent,
+                false
+              );
             }
           }
         }
@@ -68,8 +74,14 @@ export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
             if (image.abilityCounter) {
               addAbilityCounter(user, 'active', i);
             }
-            if (image.miscStatus) {
-              addmiscCounter(user, 'active', i);
+            if (image.miscCounter) {
+              addmiscCounter(
+                user,
+                'active',
+                i,
+                image.miscCounter.textContent,
+                false
+              );
             }
           }
         }
@@ -94,8 +106,14 @@ export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
           if (image.abilityCounter) {
             addAbilityCounter(user, 'bench', i);
           }
-          if (image.miscStatus) {
-            addmiscCounter(user, 'active', i);
+          if (image.miscCounter) {
+            addmiscCounter(
+              user,
+              'bench',
+              i,
+              image.miscCounter.textContent,
+              false
+            );
           }
         }
       }

@@ -3,6 +3,7 @@ import { processAction } from '../../setup/general/process-action.js';
 import { getZone } from '../../setup/zones/get-zone.js';
 import { addAbilityCounter } from '../counters/ability-counter.js';
 import { addDamageCounter } from '../counters/damage-counter.js';
+import { addmiscCounter } from '../counters/misc-status.js';
 import { addSpecialCondition } from '../counters/special-condition.js';
 
 export const rotateCard = (
@@ -61,6 +62,9 @@ export const rotateCard = (
     }
     if (image.abilityCounter) {
       addAbilityCounter(user, zoneId, i);
+    }
+    if (image.miscCounter) {
+      addmiscCounter(user, zoneId, i, image.miscCounter.textContent, false);
     }
   }
 

@@ -1,5 +1,6 @@
 import { addAbilityCounter } from '../counters/ability-counter.js';
 import { addDamageCounter } from '../counters/damage-counter.js';
+import { addmiscCounter } from '../counters/misc-status.js';
 import { addSpecialCondition } from '../counters/special-condition.js';
 
 export const updateCounters = (
@@ -52,6 +53,9 @@ export const updateCounters = (
       if (image.abilityCounter) {
         addAbilityCounter(user, oZoneId, i);
       }
+      if (image.miscCounter) {
+        addmiscCounter(user, oZoneId, i, image.miscCounter.textContent, false);
+      }
     }
   }
   if (counterZones.includes(dZoneId)) {
@@ -65,6 +69,9 @@ export const updateCounters = (
       }
       if (image.abilityCounter) {
         addAbilityCounter(user, dZoneId, i);
+      }
+      if (image.miscCounter) {
+        addmiscCounter(user, dZoneId, i, image.miscCounter.textContent, false);
       }
     }
   }

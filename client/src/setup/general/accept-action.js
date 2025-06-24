@@ -6,6 +6,11 @@ import {
   updateDamageCounter,
 } from '../../actions/counters/damage-counter.js';
 import {
+  addmiscCounter,
+  updatemiscCounter,
+  removemiscCounter,
+} from '../../actions/counters/misc-status.js';
+import {
   addSpecialCondition,
   removeSpecialCondition,
   updateSpecialCondition,
@@ -89,6 +94,9 @@ const functions = {
   addDamageCounter: addDamageCounter,
   updateDamageCounter: updateDamageCounter,
   removeDamageCounter: removeDamageCounter,
+  addmiscCounter: addmiscCounter,
+  updatemiscCounter: updatemiscCounter,
+  removemiscCounter: removemiscCounter,
   addSpecialCondition: addSpecialCondition,
   updateSpecialCondition: updateSpecialCondition,
   removeSpecialCondition: removeSpecialCondition,
