@@ -10,6 +10,11 @@ import {
   openCardContextMenu,
 } from '../image-logic/click-events.js';
 import { resetImage } from '../image-logic/reset-image.js';
+import {
+  handleCardHoverStart,
+  handleCardHoverEnd,
+  handleCardHoverMove,
+} from '../image-logic/hover-preview.js';
 
 export class Cover {
   user;
@@ -30,6 +35,9 @@ export class Cover {
       dragend: dragEnd,
       drop: drop,
       contextmenu: openCardContextMenu,
+      mouseenter: handleCardHoverStart,
+      mouseleave: handleCardHoverEnd,
+      mousemove: handleCardHoverMove,
     };
     this.buildImage(this.imageAttributes);
   }

@@ -604,6 +604,14 @@ body, input, textarea, button {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
   border-radius: 0.275rem;
   cursor: pointer;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 #hand,
 #bench,

@@ -179,14 +179,47 @@ export const updatemiscCounter = (
   processAction(user, emit, 'updatemiscCounter', [zoneId, index, miscAmount]);
 };
 
-export const removemiscCounter = (user, zoneId, index, emit = true) => {
+export const removemiscCounter = (
+  user,
+  zoneId,
+  index,
+  markerType = null,
+  emit = true
+) => {
   if (user === 'opp' && emit && systemState.isTwoPlayer) {
-    processAction(user, emit, 'removemiscCounter', [zoneId, index]);
+    processAction(user, emit, 'removemiscCounter', [zoneId, index, markerType]);
     return;
   }
 
-  const targetCard = getZone(user, zoneId).array[index];
-  //make sure targetCard exists (it won't exist if it's already been removed)
+  const zone = getZone(user, zoneId);
+  const targetCard = zone.array[index];
+
+  if (
+    targetCard.image.miscCounters &&
+    targetCard.image.miscCounters.length > 0
+  ) {
+    if (markerType) {
+      // Remove specific marker type
+      const markerIndex = targetCard.image.miscCounters.findIndex(
+        (marker) => marker.textContent === markerType
+      );
+
+      if (markerIndex !== -1) {
+        const marker = targetCard.image.miscCounters[markerIndex];
+        marker.remove();
+        targetCard.image.miscCounters.splice(markerIndex, 1);
+
+        // Reposition remaining markers
+        repositionMarkers(targetCard, zone);
+      }
+    } else {
+      // Remove all markers (legacy behavior)
+      targetCard.image.miscCounters.forEach((marker) => marker.remove());
+      targetCard.image.miscCounters = [];
+    }
+  }
+
+  // Legacy support for old single marker system
   if (targetCard.image.miscCounter) {
     targetCard.image.miscCounter.removeEventListener(
       'input',
@@ -206,7 +239,43 @@ export const removemiscCounter = (user, zoneId, index, emit = true) => {
     targetCard.image.miscCounter = null;
   }
 
-  processAction(user, emit, 'removemiscCounter', [zoneId, index]);
+  processAction(user, emit, 'removemiscCounter', [zoneId, index, markerType]);
+};
+
+// Helper function to reposition markers after removal
+const repositionMarkers = (targetCard, zone) => {
+  if (
+    !targetCard.image.miscCounters ||
+    targetCard.image.miscCounters.length === 0
+  ) {
+    return;
+  }
+
+  const targetRect = targetCard.image.getBoundingClientRect();
+  const zoneElementRect = zone.element.getBoundingClientRect();
+
+  targetCard.image.miscCounters.forEach((marker, index) => {
+    const markerSize = targetRect.width / 4;
+    const markerSpacing = 4;
+
+    const row = Math.floor(index / 3);
+    const col = index % 3;
+
+    const startX =
+      targetRect.left - zoneElementRect.left + targetRect.width / 8;
+    const startY =
+      targetRect.top -
+      zoneElementRect.top +
+      targetRect.height -
+      markerSize * 2 -
+      8;
+
+    marker.style.position = 'absolute';
+    marker.style.left = `${startX + col * (markerSize + markerSpacing)}px`;
+    marker.style.top = `${startY + row * (markerSize + markerSpacing)}px`;
+    marker.style.width = `${markerSize}px`;
+    marker.style.height = `${markerSize}px`;
+  });
 };
 
 export const addmiscCounter = (
@@ -223,125 +292,143 @@ export const addmiscCounter = (
 
   const zone = getZone(user, zoneId);
   const targetCard = zone.array[index];
+
+  // Initialize miscCounters array if it doesn't exist
+  if (!targetCard.image.miscCounters) {
+    targetCard.image.miscCounters = [];
+  }
+
+  // If this is a resize operation (emit = false), clear existing markers of this type first
+  if (!emit) {
+    const existingIndex = targetCard.image.miscCounters.findIndex(
+      (marker) => marker.textContent === miscAmount
+    );
+    if (existingIndex !== -1) {
+      targetCard.image.miscCounters[existingIndex].remove();
+      targetCard.image.miscCounters.splice(existingIndex, 1);
+    }
+  } else {
+    // For new additions, check if this marker type already exists (prevent duplicates)
+    const existingMarker = targetCard.image.miscCounters.find(
+      (marker) => marker.textContent === miscAmount
+    );
+
+    if (existingMarker) {
+      console.log(`Marker ${miscAmount} already exists on this card`);
+      return; // Don't add duplicate markers
+    }
+
+    // Check if we already have 6 markers (maximum)
+    if (targetCard.image.miscCounters.length >= 6) {
+      console.log('Maximum of 6 markers per card reached');
+      return;
+    }
+  }
+
   const targetRect = targetCard.image.getBoundingClientRect();
   const zoneElementRect = zone.element.getBoundingClientRect();
 
-  let miscCounter = targetCard.image.miscCounter;
-  if (miscCounter) {
-    miscCounter.removeEventListener('input', miscCounter.handleInput);
-    miscCounter.handleInput = null;
-    miscCounter.removeEventListener('blur', miscCounter.handleRemoveWrapper);
-    miscCounter.handleRemove = null;
-    window.removeEventListener('resize', miscCounter.handleResize);
+  let miscCounter;
+  if (user === 'self') {
+    miscCounter = selfContainerDocument.createElement('div');
+    miscCounter.className =
+      systemState.initiator === 'self' ? 'self-circle' : 'opp-circle';
   } else {
-    if (user === 'self') {
-      miscCounter = selfContainerDocument.createElement('div');
-      miscCounter.className =
-        systemState.initiator === 'self' ? 'self-circle' : 'opp-circle';
-    } else {
-      miscCounter = oppContainerDocument.createElement('div');
-      miscCounter.className =
-        systemState.initiator === 'self' ? 'opp-circle' : 'self-circle';
-    }
-    miscCounter.contentEditable = 'true';
-    miscCounter.textContent = miscAmount ? miscAmount : 'G';
+    miscCounter = oppContainerDocument.createElement('div');
+    miscCounter.className =
+      systemState.initiator === 'self' ? 'opp-circle' : 'self-circle';
   }
 
-  // Changed positioning to left side of card, about halfway down
+  miscCounter.contentEditable = 'false'; // Make non-editable for individual markers
+  miscCounter.textContent = miscAmount ? miscAmount : 'G';
+
+  // Apply marker styling based on type
+  applyMarkerStyling(miscCounter, miscAmount);
+
+  // Position markers in 2 rows of 3 at the bottom of the card
+  const markerIndex = targetCard.image.miscCounters.length;
+  const markerSize = targetRect.width / 4; // Larger markers - 1/4 of card width
+  const markerSpacing = 4; // Larger gap between markers
+
+  // Calculate position: 2 rows of 3
+  const row = Math.floor(markerIndex / 3); // 0 or 1
+  const col = markerIndex % 3; // 0, 1, or 2
+
+  const startX = targetRect.left - zoneElementRect.left + targetRect.width / 8; // Start from left edge
+  const startY =
+    targetRect.top -
+    zoneElementRect.top +
+    targetRect.height -
+    markerSize * 2 -
+    8; // Near bottom
+
   miscCounter.style.display = 'inline-block';
-  miscCounter.style.left = `${targetRect.left - zoneElementRect.left}px`;
-  miscCounter.style.top = `${targetRect.top - zoneElementRect.top + targetRect.height / 2 + targetRect.height / 8}px`;
+  miscCounter.style.position = 'absolute';
+  miscCounter.style.left = `${startX + col * (markerSize + markerSpacing)}px`;
+  miscCounter.style.top = `${startY + row * (markerSize + markerSpacing)}px`;
+  miscCounter.style.width = `${markerSize}px`;
+  miscCounter.style.height = `${markerSize}px`;
+
   zone.element.appendChild(miscCounter);
 
   if (targetCard.image.parentElement.classList.contains('full-view')) {
     miscCounter.style.display = 'none';
   }
-  miscCounter.style.width = `${targetRect.width / 3}px`;
-  miscCounter.style.height = `${targetRect.width / 3}px`;
-  miscCounter.style.lineHeight = `${targetRect.width / 3}px`;
-  miscCounter.style.fontSize = `${targetRect.width / 6}px`;
+
+  // Debug: Log marker creation
+  console.log(
+    `Added marker ${miscAmount} at position (${miscCounter.style.left}, ${miscCounter.style.top}). Total markers: ${targetCard.image.miscCounters.length + 1}`
+  );
+
+  // Add to the miscCounters array
+  targetCard.image.miscCounters.push(miscCounter);
+  miscCounter.style.lineHeight = `${markerSize}px`;
+  miscCounter.style.fontSize = `${markerSize * 0.5}px`;
   miscCounter.style.zIndex = '1';
+  miscCounter.style.fontWeight = 'bold';
+  miscCounter.style.textAlign = 'center';
 
   // Apply initial styling and tooltip
   applyMarkerStyling(miscCounter, miscCounter.textContent);
 
-  // Define event handlers
-  const handleInput = (event) => {
-    // Apply styling and tooltip immediately on input
-    applyMarkerStyling(miscCounter, miscCounter.textContent);
-    // Also call the updatemiscCounter function for network synchronization
-    updatemiscCounter(user, zoneId, index, miscCounter.textContent);
-  };
-
-  const handleResize = () => {
-    addmiscCounter(user, zoneId, index, miscCounter.textContent, false);
-  };
-
-  const handleRemove = (fromBlurEvent = false) => {
-    if (
-      targetCard.image.miscCounter &&
-      (targetCard.image.miscCounter.textContent.trim() === '' ||
-        targetCard.image.miscCounter.textContent <= 0)
-    ) {
-      targetCard.image.miscCounter.removeEventListener(
-        'input',
-        targetCard.image.miscCounter.handleInput
-      );
-      targetCard.image.miscCounter.handleInput = null;
-      targetCard.image.miscCounter.removeEventListener(
-        'blur',
-        targetCard.image.miscCounter.handleRemoveWrapper
-      );
-      targetCard.image.miscCounter.handleRemove = null;
-      window.removeEventListener(
-        'resize',
-        targetCard.image.miscCounter.handleResize
-      );
-      targetCard.image.miscCounter.remove();
-      targetCard.image.miscCounter = null;
-      if (fromBlurEvent) {
-        removemiscCounter(user, zoneId, index);
-      }
-    }
-  };
-
-  // Attach event listeners
-  miscCounter.addEventListener('input', handleInput);
-  miscCounter.handleInput = handleInput;
-
-  miscCounter.handleRemoveWrapper = () => handleRemove(true);
-  miscCounter.addEventListener('blur', miscCounter.handleRemoveWrapper);
-  miscCounter.handleRemove = handleRemove;
-
-  miscCounter.handleResize = handleResize;
-  window.addEventListener('resize', handleResize);
-
-  targetCard.image.miscCounter = miscCounter;
+  // For legacy compatibility, also set miscCounter if it's the first one
+  if (!targetCard.image.miscCounter) {
+    targetCard.image.miscCounter = miscCounter;
+  }
 
   processAction(user, emit, 'addmiscCounter', [zoneId, index, miscAmount]);
 };
 
-const createMarkerOption = (marker, user, zoneId, index) => {
+const createMarkerOption = (
+  marker,
+  user,
+  zoneId,
+  index,
+  isDisabled = false
+) => {
   const option = document.createElement('div');
   option.style.display = 'flex';
   option.style.alignItems = 'center';
   option.style.padding = '6px 8px';
-  option.style.cursor = 'pointer';
+  option.style.cursor = isDisabled ? 'not-allowed' : 'pointer';
   option.style.borderRadius = '4px';
   option.style.marginBottom = '3px';
   option.style.transition = 'background-color 0.2s';
-  option.style.backgroundColor = 'white';
-  option.style.border = '1px solid #e0e0e0';
+  option.style.backgroundColor = isDisabled ? '#f5f5f5' : 'white';
+  option.style.border = `1px solid ${isDisabled ? '#d0d0d0' : '#e0e0e0'}`;
+  option.style.opacity = isDisabled ? '0.6' : '1';
 
-  // Hover effect
-  option.addEventListener('mouseenter', () => {
-    option.style.backgroundColor = '#e8f4f8';
-    option.style.borderColor = '#b0d4db';
-  });
-  option.addEventListener('mouseleave', () => {
-    option.style.backgroundColor = 'white';
-    option.style.borderColor = '#e0e0e0';
-  });
+  // Hover effect (only if not disabled)
+  if (!isDisabled) {
+    option.addEventListener('mouseenter', () => {
+      option.style.backgroundColor = '#e8f4f8';
+      option.style.borderColor = '#b0d4db';
+    });
+    option.addEventListener('mouseleave', () => {
+      option.style.backgroundColor = 'white';
+      option.style.borderColor = '#e0e0e0';
+    });
+  }
 
   // Create marker circle preview
   const markerPreview = document.createElement('div');
@@ -385,8 +472,10 @@ const createMarkerOption = (marker, user, zoneId, index) => {
 
   // Click handler
   option.addEventListener('click', () => {
-    addmiscCounter(user, zoneId, index, marker);
-    document.querySelector('.marker-selection-window').remove();
+    if (!isDisabled) {
+      addmiscCounter(user, zoneId, index, marker);
+      document.querySelector('.marker-selection-window').remove();
+    }
   });
 
   return option;
@@ -455,6 +544,94 @@ export const showMarkerSelectionWindow = (user, zoneId, index) => {
     contentArea.style.overflowY = 'auto';
     contentArea.style.overflowX = 'hidden';
 
+    // Get existing markers on this card
+    const existingMarkers = new Set();
+    if (targetCard.image.miscCounters) {
+      targetCard.image.miscCounters.forEach((marker) => {
+        existingMarkers.add(marker.textContent);
+      });
+    }
+
+    // Add current markers section if there are any
+    if (existingMarkers.size > 0) {
+      const currentSection = document.createElement('div');
+      currentSection.style.padding = '8px';
+      currentSection.style.borderBottom = '1px solid #ddd';
+      currentSection.style.backgroundColor = '#f8f9fa';
+
+      const currentTitle = document.createElement('div');
+      currentTitle.style.fontSize = '11px';
+      currentTitle.style.fontWeight = 'bold';
+      currentTitle.style.color = '#495057';
+      currentTitle.style.marginBottom = '6px';
+      currentTitle.textContent = `Current Markers (${existingMarkers.size}/6)`;
+      currentSection.appendChild(currentTitle);
+
+      // Create grid for current markers
+      const markerGrid = document.createElement('div');
+      markerGrid.style.display = 'flex';
+      markerGrid.style.flexWrap = 'wrap';
+      markerGrid.style.gap = '4px';
+
+      Array.from(existingMarkers).forEach((markerType) => {
+        const markerItem = document.createElement('div');
+        markerItem.style.display = 'flex';
+        markerItem.style.alignItems = 'center';
+        markerItem.style.padding = '4px 6px';
+        markerItem.style.backgroundColor = 'white';
+        markerItem.style.border = '1px solid #dee2e6';
+        markerItem.style.borderRadius = '4px';
+        markerItem.style.cursor = 'pointer';
+        markerItem.style.transition = 'all 0.2s';
+
+        // Hover effect
+        markerItem.addEventListener('mouseenter', () => {
+          markerItem.style.backgroundColor = '#ffe6e6';
+          markerItem.style.borderColor = '#dc3545';
+        });
+        markerItem.addEventListener('mouseleave', () => {
+          markerItem.style.backgroundColor = 'white';
+          markerItem.style.borderColor = '#dee2e6';
+        });
+
+        // Marker preview
+        const preview = document.createElement('div');
+        preview.style.width = '16px';
+        preview.style.height = '16px';
+        preview.style.borderRadius = '50%';
+        preview.style.backgroundColor = markerColors[markerType].background;
+        preview.style.color = 'white';
+        preview.style.display = 'flex';
+        preview.style.alignItems = 'center';
+        preview.style.justifyContent = 'center';
+        preview.style.fontSize = '8px';
+        preview.style.fontWeight = 'bold';
+        preview.style.border = `1px solid ${markerColors[markerType].color}`;
+        preview.style.marginRight = '4px';
+        preview.textContent = markerType;
+
+        // Remove text
+        const removeText = document.createElement('div');
+        removeText.style.fontSize = '9px';
+        removeText.style.color = '#6c757d';
+        removeText.textContent = 'Click to remove';
+
+        markerItem.appendChild(preview);
+        markerItem.appendChild(removeText);
+
+        // Click to remove
+        markerItem.addEventListener('click', () => {
+          removemiscCounter(user, zoneId, index, markerType);
+          selectionWindow.remove();
+        });
+
+        markerGrid.appendChild(markerItem);
+      });
+
+      currentSection.appendChild(markerGrid);
+      contentArea.appendChild(currentSection);
+    }
+
     // Add positive markers section
     const positiveSection = document.createElement('div');
     positiveSection.style.padding = '8px';
@@ -469,7 +646,17 @@ export const showMarkerSelectionWindow = (user, zoneId, index) => {
     positiveSection.appendChild(positiveTitle);
 
     positiveMarkers.forEach((marker) => {
-      const option = createMarkerOption(marker, user, zoneId, index);
+      const isDisabled =
+        existingMarkers.has(marker) ||
+        (targetCard.image.miscCounters &&
+          targetCard.image.miscCounters.length >= 6);
+      const option = createMarkerOption(
+        marker,
+        user,
+        zoneId,
+        index,
+        isDisabled
+      );
       positiveSection.appendChild(option);
     });
 
@@ -488,7 +675,17 @@ export const showMarkerSelectionWindow = (user, zoneId, index) => {
     negativeSection.appendChild(negativeTitle);
 
     negativeMarkers.forEach((marker) => {
-      const option = createMarkerOption(marker, user, zoneId, index);
+      const isDisabled =
+        existingMarkers.has(marker) ||
+        (targetCard.image.miscCounters &&
+          targetCard.image.miscCounters.length >= 6);
+      const option = createMarkerOption(
+        marker,
+        user,
+        zoneId,
+        index,
+        isDisabled
+      );
       negativeSection.appendChild(option);
     });
 

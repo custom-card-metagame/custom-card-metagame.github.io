@@ -40,6 +40,42 @@ export const updateCounters = (
     movingCard.image.specialCondition.textContent = '0';
     movingCard.image.specialCondition.handleRemove();
   }
+
+  // Handle misc counters
+  if (movingCard.image.miscCounter) {
+    const index = dZone.array.findIndex((card) => card === movingCard);
+    if (counterZones.includes(dZoneId)) {
+      addmiscCounter(
+        user,
+        dZoneId,
+        index,
+        movingCard.image.miscCounter.textContent,
+        false
+      );
+    } else {
+      movingCard.image.miscCounter.textContent = '0';
+      movingCard.image.miscCounter.handleRemove();
+    }
+  }
+
+  // Handle multiple misc markers
+  if (
+    movingCard.image.miscCounters &&
+    movingCard.image.miscCounters.length > 0
+  ) {
+    const index = dZone.array.findIndex((card) => card === movingCard);
+    if (counterZones.includes(dZoneId)) {
+      movingCard.image.miscCounters.forEach((marker) => {
+        addmiscCounter(user, dZoneId, index, marker.textContent, false);
+      });
+    } else {
+      // Remove all markers if moving to a zone that doesn't support counters
+      movingCard.image.miscCounters.forEach((marker) => {
+        marker.remove();
+      });
+      movingCard.image.miscCounters = [];
+    }
+  }
   //update damage counter placements on all cards from the same origin/destination zones
   if (counterZones.includes(oZoneId)) {
     for (let i = 0; i < oZone.getCount(); i++) {

@@ -64,9 +64,15 @@ body, input, textarea, button {
   transform: translateX(-50%) scaleX(-1) scaleY(-1);
   top: 0%;
   left: 50%;
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .flip-image img {
   transform: scaleX(-1) scaleY(-1) !important;
+  image-rendering: -webkit-optimize-contrast;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 .highlight {
   box-shadow: 0 0 0 4px rgb(182, 110, 110) !important;
@@ -594,6 +600,14 @@ body, input, textarea, button {
   box-shadow: 0 2px 4px rgba(0, 0, 0, .3);
   border-radius: 0.3rem;
   cursor: pointer;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
 }
 #hand,
 #bench,

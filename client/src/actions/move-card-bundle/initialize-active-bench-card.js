@@ -83,6 +83,12 @@ export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
                 false
               );
             }
+            // Handle multiple misc markers
+            if (image.miscCounters && image.miscCounters.length > 0) {
+              image.miscCounters.forEach((marker) => {
+                addmiscCounter(user, 'active', i, marker.textContent, false);
+              });
+            }
           }
         }
       }
@@ -114,6 +120,12 @@ export const initializeActiveBenchCard = (user, movingCard, dZoneId, dZone) => {
               image.miscCounter.textContent,
               false
             );
+          }
+          // Handle multiple misc markers
+          if (image.miscCounters && image.miscCounters.length > 0) {
+            image.miscCounters.forEach((marker) => {
+              addmiscCounter(user, 'bench', i, marker.textContent, false);
+            });
           }
         }
       }

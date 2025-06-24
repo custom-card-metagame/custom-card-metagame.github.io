@@ -36,6 +36,27 @@ export const evolveCard = (
     targetCard.image.miscCounter.textContent = '0';
     targetCard.image.miscCounter.handleRemove();
   }
+
+  // Handle multiple misc markers
+  if (
+    targetCard.image.miscCounters &&
+    targetCard.image.miscCounters.length > 0
+  ) {
+    targetCard.image.miscCounters.forEach((marker) => {
+      addmiscCounter(
+        user,
+        dZoneId,
+        dZone.getCount() - 1,
+        marker.textContent,
+        false
+      );
+    });
+    //remove the old markers
+    targetCard.image.miscCounters.forEach((marker) => {
+      marker.remove();
+    });
+    targetCard.image.miscCounters = [];
+  }
   if (targetCard.image.specialCondition) {
     targetCard.image.specialCondition.textContent = '0';
     targetCard.image.specialCondition.handleRemove();

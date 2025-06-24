@@ -10,6 +10,13 @@ import {
   dragStart,
 } from '../image-logic/drag.js';
 import { resetImage } from '../image-logic/reset-image.js';
+import {
+  handleCardHoverStart,
+  handleCardHoverEnd,
+  handleCardHoverMove,
+  setDragState,
+  setRightClickState,
+} from '../image-logic/hover-preview.js';
 
 export class Card {
   name;
@@ -34,6 +41,9 @@ export class Card {
       dragleave: dragLeave,
       dragend: dragEnd,
       contextmenu: openCardContextMenu,
+      mouseenter: handleCardHoverStart,
+      mouseleave: handleCardHoverEnd,
+      mousemove: handleCardHoverMove,
     };
     this.buildImage(this.imageAttributes);
   }

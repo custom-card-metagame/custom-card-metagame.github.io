@@ -5,6 +5,8 @@ import {
 } from '../../front-end.js';
 import { closeMarkerSelectionWindow } from '../counters/misc-status.js';
 import { refreshBoard } from '../../setup/sizing/refresh-board.js';
+import { hideHoverPreview } from '../../setup/image-logic/hover-preview.js';
+
 import { getZone } from '../../setup/zones/get-zone.js';
 
 export const hideZoneElements = () => {
@@ -127,5 +129,7 @@ export const closePopups = (event) => {
   closeFullView(event);
   hideZoneElementsIfEmpty(event);
   closeMarkerSelectionWindow();
+  hideHoverPreview(); // Hide any active hover preview
+
   document.getElementById('cardContextMenu').style.display = 'none';
 };

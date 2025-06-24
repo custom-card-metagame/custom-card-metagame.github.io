@@ -16,6 +16,10 @@ import { appendMessage } from '../chatbox/append-message.js';
 import { determineUsername } from '../general/determine-username.js';
 import { getZone } from '../zones/get-zone.js';
 import { isBlockedByReplay } from '../../setup/general/replay-block.js';
+import {
+  removemiscCounter,
+  showMarkerSelectionWindow,
+} from '../../actions/counters/misc-status.js';
 
 export const identifyCard = (event) => {
   mouseClick.cardUser = event.target.user === 'self' ? 'self' : 'opp';
@@ -71,6 +75,8 @@ export const openCardContextMenu = (event) => {
   event.stopPropagation();
 
   identifyCard(event);
+
+  // We'll add marker options to the standard menu instead of replacing it
 
   const selfView =
     (selfContainerDocument.body.contains(event.target) &&
@@ -145,6 +151,119 @@ export const openCardContextMenu = (event) => {
   )
     ? 'block'
     : 'none';
+
+  // Add marker removal options if card has markers
+  const zone = getZone(mouseClick.cardUser, mouseClick.zoneId);
+  const targetCard = zone.array[mouseClick.cardIndex];
+
+  // Clear any existing marker buttons
+  const existingMarkerButtons = cardContextMenu.querySelectorAll(
+    '.marker-remove-button'
+  );
+  existingMarkerButtons.forEach((button) => button.remove());
+
+  if (
+    targetCard &&
+    targetCard.image.miscCounters &&
+    targetCard.image.miscCounters.length > 0 &&
+    ['active', 'bench'].includes(mouseClick.zoneId)
+  ) {
+    // Add separator
+    const separator = document.createElement('div');
+    separator.className = 'marker-remove-button';
+    separator.style.cssText = `
+      height: 1px;
+      background: #333;
+      margin: 5px 0;
+    `;
+    cardContextMenu.appendChild(separator);
+
+    // Add individual marker removal buttons
+    targetCard.image.miscCounters.forEach((marker) => {
+      const markerButton = document.createElement('button');
+      markerButton.className = 'marker-remove-button';
+      markerButton.style.cssText = `
+        display: block;
+        width: 100%;
+        padding: 8px;
+        background: #444;
+        color: white;
+        border: 1px solid #666;
+        cursor: pointer;
+        font-size: 12px;
+        margin-bottom: 2px;
+      `;
+      markerButton.textContent = `Remove ${marker.textContent} Marker`;
+
+      markerButton.addEventListener('click', () => {
+        removemiscCounter(
+          mouseClick.cardUser,
+          mouseClick.zoneId,
+          mouseClick.cardIndex,
+          marker.textContent
+        );
+        cardContextMenu.style.display = 'none';
+      });
+
+      cardContextMenu.appendChild(markerButton);
+    });
+
+    // Add "Remove All Markers" button if multiple markers
+    if (targetCard.image.miscCounters.length > 1) {
+      const removeAllButton = document.createElement('button');
+      removeAllButton.className = 'marker-remove-button';
+      removeAllButton.style.cssText = `
+        display: block;
+        width: 100%;
+        padding: 8px;
+        background: #d32f2f;
+        color: white;
+        border: 1px solid #b71c1c;
+        cursor: pointer;
+        font-size: 12px;
+        margin-bottom: 2px;
+      `;
+      removeAllButton.textContent = 'Remove All Markers';
+
+      removeAllButton.addEventListener('click', () => {
+        removemiscCounter(
+          mouseClick.cardUser,
+          mouseClick.zoneId,
+          mouseClick.cardIndex
+        );
+        cardContextMenu.style.display = 'none';
+      });
+
+      cardContextMenu.appendChild(removeAllButton);
+    }
+
+    // Add "Add More Markers" button
+    const addMoreButton = document.createElement('button');
+    addMoreButton.className = 'marker-remove-button';
+    addMoreButton.style.cssText = `
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background: #2e7d32;
+      color: white;
+      border: 1px solid #1b5e20;
+      cursor: pointer;
+      font-size: 12px;
+      margin-bottom: 2px;
+    `;
+    addMoreButton.textContent = 'Add More Markers';
+
+    addMoreButton.addEventListener('click', () => {
+      showMarkerSelectionWindow(
+        mouseClick.cardUser,
+        mouseClick.zoneId,
+        mouseClick.cardIndex
+      );
+      cardContextMenu.style.display = 'none';
+    });
+
+    cardContextMenu.appendChild(addMoreButton);
+  }
 
   const atLeastOneButtonVisible = Array.from(cardContextMenu.children).some(
     (button) => button.style.display !== 'none'

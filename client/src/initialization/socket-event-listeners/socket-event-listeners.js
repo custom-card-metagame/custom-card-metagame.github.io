@@ -80,7 +80,7 @@ export const initializeSocketEventListeners = () => {
         };
         socket.emit('spectatorActionData', data);
       }
-    }, 1000);
+    }, 1000); // Normal frequency for responsive spectator mode
   });
   socket.on('spectatorJoin', () => {
     spectatorJoin();

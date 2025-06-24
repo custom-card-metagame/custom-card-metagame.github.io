@@ -9,6 +9,7 @@ import {
 } from '../../front-end.js';
 import { getZone } from '../zones/get-zone.js';
 import { identifyCard } from './click-events.js';
+import { setDragState } from './hover-preview.js';
 
 const popupContainers = [
   'lostZone',
@@ -22,6 +23,8 @@ export const dragStart = (event) => {
   if (systemState.isReplay && !systemState.isTwoPlayer) {
     return;
   }
+
+  setDragState(true); // Disable hover preview during drag
   event.target.classList.add('high-zIndex');
   if (event.target.attached) {
     event.target.style.opacity = '0';
@@ -154,6 +157,8 @@ export const dragLeave = (event) => {
 };
 
 export const dragEnd = (event) => {
+  setDragState(false); // Re-enable hover preview after drag
+
   const enablePointerEvents = (containerDocument, classNames) => {
     const counters = containerDocument.getElementsByClassName(...classNames);
     for (let i = 0; i < counters.length; i++) {

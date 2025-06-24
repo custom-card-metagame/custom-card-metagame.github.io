@@ -149,6 +149,7 @@ async function main() {
   };
   // Set up a timer to clean up empty rooms every 5 minutes (adjust as needed)
   setInterval(cleanUpEmptyRooms, 5 * 60 * 1000);
+
   //Socket.IO Connection Handling
   io.on('connection', async (socket) => {
     // Function to handle disconnections (unintended)
@@ -251,6 +252,11 @@ async function main() {
         socket.on('disconnect', socket.data.disconnectListener);
         io.to(data.roomId).emit('userReconnected', data);
       }
+    });
+
+    // Add ping/pong handling for connection monitoring
+    socket.on('ping', () => {
+      socket.emit('pong');
     });
 
     // List of socket events
