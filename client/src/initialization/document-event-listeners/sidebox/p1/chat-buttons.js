@@ -32,8 +32,4 @@ export const initializeP1ChatButtons = () => {
     undo(systemState.initiator);
   });
 
-  const FREEBUTTON = document.getElementById('FREEBUTTON');
-  FREEBUTTON.addEventListener('click', () => {
-    appendMessage(systemState.initiator, FREEBUTTON.textContent, 'player');
-  });
 };

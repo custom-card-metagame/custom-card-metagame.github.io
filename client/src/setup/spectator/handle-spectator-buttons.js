@@ -9,11 +9,6 @@ const toggleElementsVisibility = (elementIds, isVisible) => {
     const element = document.getElementById(id);
     element.style.display = isVisible ? '' : 'none';
   });
-  if (isVisible) {
-    document.getElementById('p2FREEBUTTON').classList.remove('spectator-color');
-  } else {
-    document.getElementById('p2FREEBUTTON').classList.add('spectator-color');
-  }
 };
 
 const toggleZoneElementsVisibility = (elementIds, isVisible) => {

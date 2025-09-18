@@ -463,9 +463,6 @@ ul, li {
 #attackButton, #p2AttackButton {
   border-radius: 0 .5vw .5vw 0;
 }
-#FREEBUTTON, #p2FREEBUTTON {
-  border-radius: .5vw 0 0 .5vw;
-}
 .centered-paragraph {
   display: block;
   width: fit-content;

@@ -34,12 +34,4 @@ export const initializeP2ChatButtons = () => {
   //     undo(systemState.initiator);
   // });
 
-  const p2FREEBUTTON = document.getElementById('p2FREEBUTTON');
-  p2FREEBUTTON.addEventListener('click', () => {
-    const isSpectator =
-      systemState.isTwoPlayer &&
-      document.getElementById('spectatorModeCheckbox').checked;
-    const type = isSpectator ? 'spectator-message' : 'player';
-    appendMessage(systemState.initiator, p2FREEBUTTON.textContent, type);
-  });
 };
